@@ -1,0 +1,41 @@
+@import './base.css';
+
+body {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    -ms-flex-direction: column;
+    -webkit-flex-direction: column;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.basic-padding-container {
+    padding: 10px 18%;
+}
+
+#film-serie-watchlist-full-description {
+    display: flex;
+    gap: 30px;
+    padding-top: 100px;
+    color: white;
+    padding-top: 30px;
+}
+
+#connexion-block {
+    margin: 20px auto;
+    padding: 20px;
+    width: 500px;
+}
+
+#connexion-block md-outlined-text-field {
+    padding: 5px 0;
+    width: 100%;
+}
+
+#connexion-block .button-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 10px;
+}

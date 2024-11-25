@@ -1,0 +1,30 @@
+services:
+  client:
+    container_name: nobespo-client-container
+    build: ./client
+    ports:
+      - 8221:80
+    depends_on:
+      - server
+  server:
+    container_name: nobespo-server-container
+    build: ./Server
+    ports:
+      - 5259:8080
+    secrets:
+      - tmdbapikey
+      - tmdbapireadtoken
+
+secrets:
+  tmdbapikey:
+    file: ./secrets/tmdbapikey.txt
+  tmdbapireadtoken:
+    file: ./secrets/tmdbapireadtoken.txt
+
+# Command :
+# use: docker-compose build
+# or: docker-compose build --no-cache
+# then: docker-compose up
+
+# To get the logs from nginx
+# docker cp nobespo-client-container:/var/log/nginx/all_logs.log ./client/nginx_logs.log

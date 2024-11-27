@@ -10,13 +10,13 @@ onMounted(fetchTrending)
 
 async function fetchTrending() {
     
-    let response = await fetch("/api/tmdb/trending")
+    const response = await fetch("/api/tmdb/trending", { method: "GET" })
 
     if (response.ok) {
-        let apiResponse = await response.json()
+        const apiResponse = await response.json()
 
-        let apiResults = apiResponse.results as any[]
-        let middleIndex = Math.ceil(apiResults.length / 2)
+        const apiResults = apiResponse.results as any[]
+        const middleIndex = Math.ceil(apiResults.length / 2)
 
         apiResultsLeftSide.value = apiResults.slice(0, middleIndex)
         apiResultsRightSide.value = apiResults.slice(middleIndex)

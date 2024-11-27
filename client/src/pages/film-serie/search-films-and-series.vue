@@ -15,20 +15,20 @@ watch(
 )
 
 async function fetchApi() {
-  apiResults.value = undefined
-  let response = await fetch(`/api/tmdb/search-films-and-series/${route.params.query}`)
+    apiResults.value = undefined
+    const response = await fetch(`/api/tmdb/search-films-and-series/${route.params.query}`, { method: "GET" })
 
-  if (response.ok) {
-    let apiResponse = await response.json()
-    apiResults.value = apiResponse.results as any[]
-  }
+    if (response.ok) {
+        const apiResponse = await response.json()
+        apiResults.value = apiResponse.results as any[]
+    }
 }
 </script>
 
 <template>
-  <FilmsAndSeriesSearchBar />
-  <FilmsAndSeriesList :medias="apiResults" class="basic-padding-container"/>
-  <h1 v-if="apiResults && apiResults.length == 0" class="error-message">Nothing was found !</h1>
+    <FilmsAndSeriesSearchBar />
+    <FilmsAndSeriesList :medias="apiResults" class="basic-padding-container"/>
+    <h1 v-if="apiResults && apiResults.length == 0" class="error-message">Nothing was found !</h1>
 </template>
 
 <style lang="scss">

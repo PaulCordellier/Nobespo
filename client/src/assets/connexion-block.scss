@@ -1,0 +1,18 @@
+#connexion-block {
+    margin: 15px auto 20px auto;
+    padding: 20px;
+    width: 500px;
+
+    md-outlined-text-field {
+        padding: 5px 0;
+        width: 100%;
+    }
+
+    .button-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-top: 30px;
+    }
+}
+

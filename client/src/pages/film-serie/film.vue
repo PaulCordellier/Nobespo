@@ -16,7 +16,7 @@ onMounted(fetchTrending)
 
 async function fetchTrending() {
     
-    let response = await fetch(`/api/tmdb/movie/${route.params.id}`)
+    const response = await fetch(`/api/tmdb/movie/${route.params.id}`, { method: "GET" })
 
     if (response.ok) {
         media.value = await response.json()
@@ -24,7 +24,7 @@ async function fetchTrending() {
 }
 
 function onWriteCommentsButtonClick() {
-    let dialogWriteComment: MdDialog = document.getElementById("write-comment-dialog") as MdDialog
+    const dialogWriteComment: MdDialog = document.getElementById("write-comment-dialog") as MdDialog
     dialogWriteComment.show();
 }
 </script>

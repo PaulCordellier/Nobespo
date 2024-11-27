@@ -14,12 +14,15 @@ services:
     secrets:
       - tmdbapikey
       - tmdbapireadtoken
+      - jwtsecretkey
 
 secrets:
   tmdbapikey:
     file: ./secrets/tmdbapikey.txt
   tmdbapireadtoken:
     file: ./secrets/tmdbapireadtoken.txt
+  jwtsecretkey:
+    file: ./secrets/jwtsecretkey.txt
 
 # Command :
 # use: docker-compose build

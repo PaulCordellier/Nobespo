@@ -1,0 +1,17 @@
+.text-field {
+    display: block;
+    background-color: transparent;
+    color: white;
+    width: 100%;
+    font-size: 1.2em;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: solid lightgray 3px;
+    border-radius: 10px;
+}
+
+.text-field-label {
+    display: block;
+    padding: 10px 0;
+    font-size: 1.2em;
+}

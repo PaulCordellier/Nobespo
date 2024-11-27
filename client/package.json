@@ -11,8 +11,9 @@
         "type-check": "vue-tsc --build --force"
     },
     "dependencies": {
-        "@material/web": "^2.2.0",
         "@fastify/http-proxy": "^10.0.1",
+        "@material/web": "^2.2.0",
+        "@vueuse/core": "^11.3.0",
         "fastify": "^5.1.0",
         "pinia": "^2.2.6",
         "vue": "^3.5.12",

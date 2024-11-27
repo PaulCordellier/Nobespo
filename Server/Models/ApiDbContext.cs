@@ -4,7 +4,7 @@ namespace Server.Models;
 
 public partial class ApiDbContext : DbContext
 {
-    public virtual DbSet<Media> Medias { get; set; }
+    public virtual DbSet<Account> Accounts { get; set; } = null!;
 
     public ApiDbContext() : base()
     {
@@ -16,9 +16,9 @@ public partial class ApiDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<Media>();
+        modelBuilder.HasDefaultSchema("NobespoDB");
 
-        base.OnModelCreating(modelBuilder);
+        modelBuilder.Entity<Account>();
 
         OnModelCreatingPartial(modelBuilder);
     }

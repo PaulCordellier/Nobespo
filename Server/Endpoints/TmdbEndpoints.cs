@@ -13,29 +13,25 @@ public static class TmdbEndpoints
         {
             HttpResponseMessage response = await tmdbApi.SearchMulti(query);
             await CreateContextFromResponseMessage(context, response);
-        })
-        .WithName("GetSearchFilmsAndSeries");
+        });
 
         route.MapGet("/trending", async (HttpContext context, TmdbApi tmdbApi, HttpRequest request) =>
         {
             HttpResponseMessage response = await tmdbApi.GetTrending();
             await CreateContextFromResponseMessage(context, response);
-        })
-        .WithName("GetTrending");
+        });
 
         route.MapGet("/movie/{id:int}", async (int id, HttpContext context, TmdbApi tmdbApi) =>
         {
             HttpResponseMessage response = await tmdbApi.GetMovieDetail(id);
             await CreateContextFromResponseMessage(context, response);
-        })
-        .WithName("GetMovieDetail");
+        });
 
         route.MapGet("/serie/{id:int}", async (int id, HttpContext context, TmdbApi tmdbApi) =>
         {
             HttpResponseMessage response = await tmdbApi.GetSerieDetail(id);
             await CreateContextFromResponseMessage(context, response);
-        })
-        .WithName("GetSerieDetail");
+        });
     }
 
     /// <summary>

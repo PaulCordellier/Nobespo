@@ -6,6 +6,8 @@ public static class CommentEndpoints
     {
         var route = app.MapGroup("comment").WithTags("Comment");
 
-        route.MapPost("", () => { });
+        route.RequireAuthorization("user");
+
+        //route.MapPost("", () => { });
     }
 }

@@ -10,45 +10,76 @@ using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// On the Dockerfile, this app is launched with the with-docker argument, which indicates that the app
+// should get the user secrets from docker secrets and not from dotnet secrets
+bool appIsUsingDocker = args.Length >= 1 && args[0] == "with-docker";
 
 // This code section aims to get all the application secrets from dotnet secrets or docker secrets //
 
-// Trying to access secret data through dontet secrets (doesn't work in production) //
+string? tmdbApiKey = null;
+string? tmdbApiReadToken = null;
+string? jwtSecretToken = null;
+string? dbPassword = null;
 
-string? tmdbApiKey = builder.Configuration["TmdbApi:Key"];
-string? tmdbApiReadToken = builder.Configuration["TmdbApi:ReadToken"];
-string? jwtSecretToken = builder.Configuration["Jwt:SecretKey"];
-
-
-// Trying to access secret data through docker secrets only works in container //
-
-const string DockerSecretsPath = "/run/secrets/";
-const string ApiKeyDockerSecretPath = DockerSecretsPath + "tmdbapikey";
-const string ApiReadTokenDockerSecretPath = DockerSecretsPath + "tmdbapireadtoken";
-const string JwtSecretKeySecretPath = DockerSecretsPath + "jwtsecretkey";
-
-if (File.Exists(ApiKeyDockerSecretPath))
+if (appIsUsingDocker)
 {
-    tmdbApiKey = File.ReadAllText(ApiKeyDockerSecretPath);
+    // Trying to access secret data through docker secrets //
+
+    const string DockerSecretsPath = "/run/secrets/";
+    const string ApiKeyDockerSecretPath = DockerSecretsPath + "TmdbApiKey";
+    const string ApiReadTokenDockerSecretPath = DockerSecretsPath + "TmdbApiReadToken";
+    const string JwtSecretKeySecretPath = DockerSecretsPath + "JwtSecretKey";
+    const string DbPasswordSecretPath = DockerSecretsPath + "DbPassword";
+
+    if (File.Exists(ApiKeyDockerSecretPath))
+    {
+        tmdbApiKey = File.ReadAllText(ApiKeyDockerSecretPath);
+    }
+    if (File.Exists(ApiReadTokenDockerSecretPath))
+    {
+        tmdbApiReadToken = File.ReadAllText(ApiReadTokenDockerSecretPath);
+    }
+    if (File.Exists(JwtSecretKeySecretPath))
+    {
+        jwtSecretToken = File.ReadAllText(JwtSecretKeySecretPath);
+    }
+    if (File.Exists(DbPasswordSecretPath))
+    {
+        dbPassword = File.ReadAllText(DbPasswordSecretPath);
+    }
 }
-if (File.Exists(ApiReadTokenDockerSecretPath))
+else
 {
-    tmdbApiReadToken = File.ReadAllText(ApiReadTokenDockerSecretPath);
-}
-if (File.Exists(JwtSecretKeySecretPath))
-{
-    jwtSecretToken = File.ReadAllText(JwtSecretKeySecretPath);
+    // Trying to access secret data through dontet secrets (doesn't work in production) //
+
+    tmdbApiKey = builder.Configuration["TmdbApiKey"];
+    tmdbApiReadToken = builder.Configuration["TmdbApiReadToken"];
+    jwtSecretToken = builder.Configuration["JwtSecretKey"];
+    dbPassword = builder.Configuration["DbPassword"];
 }
 
 
 // Verify that the code accessed the secrets
-if (tmdbApiKey is null || tmdbApiReadToken is null || jwtSecretToken is null)
+if (tmdbApiKey is null || tmdbApiReadToken is null || jwtSecretToken is null || dbPassword is null)
 {
-    string exceptionMessage = "You need to setup this app's secrets to start this project. For more information please read README.md. Secrets missing :";
-    exceptionMessage += tmdbApiKey is null ? " TmdbApi:Key" : "";
-    exceptionMessage += tmdbApiReadToken is null ? " TmdbApi:ReadToken" : "";
-    exceptionMessage += jwtSecretToken is null ? " Jwt:SecretKey" : "";
-    exceptionMessage += ".";
+    string exceptionMessage = "You need to setup this app's secrets to start this project. For more" +
+                              " information please read README.md. Secrets missing :";
+
+    exceptionMessage += tmdbApiKey is null ? " TmdbApiKey" : "";
+    exceptionMessage += tmdbApiReadToken is null ? " TmdbApiReadToken" : "";
+    exceptionMessage += jwtSecretToken is null ? " JwtSecretKey" : "";
+    exceptionMessage += dbPassword is null ? " DbPassword" : "";
+
+    if (appIsUsingDocker)
+    {
+        exceptionMessage += ". The argument with-docker is detected when the app is launched so" +
+            "the app is trying to access the secrets through docker secrets.";
+    }
+    else
+    {
+        exceptionMessage += ". The argument with-docker isn't detected when the app is launched" +
+            "so the app is trying to access the secrets through dotnet secrets.";
+    }
 
     throw new Exception(exceptionMessage);
 }
@@ -60,9 +91,15 @@ SecurityKey jwtSecurityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwt
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddOpenApi();
-builder.Services.AddSingleton(x => new TmdbApi(tmdbApiKey, tmdbApiReadToken));
-builder.Services.AddSingleton(x => new JwtTokens(jwtSecurityKey, builder.Configuration));
-builder.Services.AddDbContext<ApiDbContext>(options => options.UseNpgsql("TODO"));
+
+builder.Services.AddSingleton(x => new TmdbApiService(tmdbApiKey, tmdbApiReadToken));
+builder.Services.AddSingleton(x => new JwtTokenService(jwtSecurityKey, builder.Configuration));
+
+builder.Services.AddDbContext<ApiDbContext>(options =>
+{
+    string serverName = appIsUsingDocker ? "database" : "localhost";
+    options.UseNpgsql($"Server={serverName};port=5432;Database=nobespo;uid=postgres;password={dbPassword};");
+});
 
 // Authentication and authorization docs: https://www.nuget.org/packages/Microsoft.AspNetCore.Authentication.JwtBearer
 // Sample example: https://github.com/dotnet/aspnetcore/tree/main/src/Security/Authentication/JwtBearer/samples/MinimalJwtBearerSample
@@ -116,7 +153,5 @@ app.UseAuthorization();
 app.MapMediaEndpoints();
 app.MapCommentEndpoints();
 app.MapAccountEndpoints();
-
-app.MapFallbackToFile("/index.html");
 
 app.Run();

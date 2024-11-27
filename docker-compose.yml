@@ -9,25 +9,41 @@ services:
   server:
     container_name: nobespo-server-container
     build: ./Server
-    ports:
-      - 5259:8080
+    depends_on:
+      - database
     secrets:
-      - tmdbapikey
-      - tmdbapireadtoken
-      - jwtsecretkey
+      - TmdbApiKey
+      - TmdbApiReadToken
+      - JwtSecretKey
+      - DbPassword
+  database:
+    container_name: nobespo-db-container
+    image: postgres:17
+    restart: always
+    # set shared memory limit when using docker-compose:
+    shm_size: 128mb
+    environment:
+      POSTGRES_PASSWORD_FILE: /run/secrets/DbPassword
+      POSTGRES_DB: nobespo
+    volumes:
+      - ./database/generated_creation_script.sql:/docker-entrypoint-initdb.d/1_creation_script.sql
+    secrets:
+      - DbPassword
 
 secrets:
-  tmdbapikey:
-    file: ./secrets/tmdbapikey.txt
-  tmdbapireadtoken:
-    file: ./secrets/tmdbapireadtoken.txt
-  jwtsecretkey:
-    file: ./secrets/jwtsecretkey.txt
+  TmdbApiKey:
+    file: ./secrets/TmdbApiKey.txt
+  TmdbApiReadToken:
+    file: ./secrets/TmdbApiReadToken.txt
+  JwtSecretKey:
+    file: ./secrets/JwtSecretKey.txt
+  DbPassword:
+    file: ./secrets/DbPassword.txt
 
-# Command :
+# To start the server:
 # use: docker-compose build
 # or: docker-compose build --no-cache
 # then: docker-compose up
 
-# To get the logs from nginx
+# To get the logs from nginx:
 # docker cp nobespo-client-container:/var/log/nginx/all_logs.log ./client/nginx_logs.log

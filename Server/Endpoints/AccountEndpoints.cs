@@ -11,19 +11,9 @@ public static class AccountEndpoints
     {
         var route = app.MapGroup("account").WithTags("Account");
 
-        route.MapPost("login", ([FromBody] AccountConnexionRequestData requestData, JwtTokens jwtTokens) =>
-        {
-            Account account = new Account() { Id = 0, Password = requestData.Password, Username = requestData.Username };
+        route.MapPost("login", Login);
 
-            return Results.Ok(new { token = jwtTokens.GenerateToken(account) });
-        });
-
-        route.MapPost("signup", ([FromBody] AccountConnexionRequestData requestData, JwtTokens jwtTokens) =>
-        {
-            Account account = new Account() { Id = 0, Password = requestData.Password, Username = requestData.Username };
-
-            return Results.Ok(new { Token = jwtTokens.GenerateToken(account), Account = account });
-        });
+        route.MapPost("signup", SignUp);
 
         // Route to modify the account :
 
@@ -32,6 +22,22 @@ public static class AccountEndpoints
         //    Claim? usernameClaim = user.Claims.FirstOrDefault(claim => claim.Type == "account_username");
         //})
         //.RequireAuthorization("user");
+    }
+    private static async Task<IResult> Login([FromBody] AccountConnexionRequestData requestData, JwtTokenService jwtTokenService, ApiDbContext dbContext)
+    {
+        Account account = new Account() { Id = 0, Password = requestData.Password, Username = requestData.Username };
+
+        return Results.Ok(new { token = jwtTokenService.GenerateToken(account) });
+    }
+
+    private static async Task<IResult> SignUp([FromBody] AccountConnexionRequestData requestData, JwtTokenService jwtTokenService, ApiDbContext dbContext)
+    {
+        Account account = new Account() { Id = 0, Password = requestData.Password, Username = requestData.Username };
+
+        await dbContext.Accounts.AddAsync(account);
+        await dbContext.SaveChangesAsync();
+
+        return Results.Ok(new { Token = jwtTokenService.GenerateToken(account), Account = account });
     }
 
     class AccountConnexionRequestData

@@ -9,25 +9,25 @@ public static class TmdbEndpoints
     {
         var route = app.MapGroup("tmdb").WithTags("TMDB");
 
-        route.MapGet("/search-films-and-series/{query}", async (string query, HttpContext context, TmdbApi tmdbApi) =>
+        route.MapGet("/search-films-and-series/{query}", async (string query, HttpContext context, TmdbApiService tmdbApi) =>
         {
             HttpResponseMessage response = await tmdbApi.SearchMulti(query);
             await CreateContextFromResponseMessage(context, response);
         });
 
-        route.MapGet("/trending", async (HttpContext context, TmdbApi tmdbApi, HttpRequest request) =>
+        route.MapGet("/trending", async (HttpContext context, TmdbApiService tmdbApi, HttpRequest request) =>
         {
             HttpResponseMessage response = await tmdbApi.GetTrending();
             await CreateContextFromResponseMessage(context, response);
         });
 
-        route.MapGet("/movie/{id:int}", async (int id, HttpContext context, TmdbApi tmdbApi) =>
+        route.MapGet("/movie/{id:int}", async (int id, HttpContext context, TmdbApiService tmdbApi) =>
         {
             HttpResponseMessage response = await tmdbApi.GetMovieDetail(id);
             await CreateContextFromResponseMessage(context, response);
         });
 
-        route.MapGet("/serie/{id:int}", async (int id, HttpContext context, TmdbApi tmdbApi) =>
+        route.MapGet("/serie/{id:int}", async (int id, HttpContext context, TmdbApiService tmdbApi) =>
         {
             HttpResponseMessage response = await tmdbApi.GetSerieDetail(id);
             await CreateContextFromResponseMessage(context, response);

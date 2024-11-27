@@ -8,8 +8,19 @@ To run the app, you need to generate passwords and get [API keys form The Movie 
 
 ## Migrations
 
-The server API uses Entity Framework Core and Npgsql to handle the API with C# code. To start the app without docker, you need to run some commands :
+The server API uses Entity Framework Core and Npgsql to handle the API with C# code. To generate the SQL scripts from C# code you need to:
 
+Install dotnet-ef:
+```
+dotnet tool install --global dotnet-ef
 ```
 
+Add a database migration:
+```
+dotnet-ef migrations add NobespoDbMigrations --project Server
+```
+
+Get the generated SQL script form the C# code:
+```
+dotnet-ef migrations script --project Server --output ./database/generated_creation_script.sql
 ```

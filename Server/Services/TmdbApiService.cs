@@ -1,17 +1,14 @@
 ﻿using System.Net.Http.Headers;
-using System.Text.Json;
-using Server.Models;
 
 namespace Server.Services;
 
-public sealed class TmdbApi
+public sealed class TmdbApiService
 {
     private HttpClient _httpClient;     // An HttpClient should be created only once
 
-    public TmdbApi(string apiKey, string apiReadToken)
+    public TmdbApiService(string apiKey, string apiReadToken)
     {
         _httpClient = new HttpClient();
-        Console.WriteLine("HttpClient created !");  // TODO asupp
         _httpClient.BaseAddress = new Uri("https://api.themoviedb.org/3/");
         _httpClient.DefaultRequestHeaders.Accept.Clear();
         _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));

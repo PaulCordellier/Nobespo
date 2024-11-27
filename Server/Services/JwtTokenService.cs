@@ -5,12 +5,12 @@ using Server.Models;
 
 namespace Server.Services;
 
-public sealed class JwtTokens
+public sealed class JwtTokenService
 {
     private SecurityKey _jwtSecretKey;
     private IConfiguration _configuration;
 
-    public JwtTokens(SecurityKey jwtSecretKey, IConfiguration configuration)
+    public JwtTokenService(SecurityKey jwtSecretKey, IConfiguration configuration)
     {
         _jwtSecretKey = jwtSecretKey;
         _configuration = configuration;

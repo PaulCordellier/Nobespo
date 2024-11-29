@@ -1,28 +1,33 @@
 <script setup lang="ts">
-import { MdFilledButton } from '@material/web/button/filled-button';
-import FieldVerifier from "@/components/FieldVerifier.vue";
-import { type FieldVerifierInfo } from "@/components/FieldVerifier.vue";
-import { ref } from 'vue';
-import { useRouter } from 'vue-router';
-import { type Account } from "@/models/account";
-import { useCurrentUserStore } from "@/stores/currentUser";
+import { MdFilledButton } from '@material/web/button/filled-button'
+import FieldVerifier from "@/components/FieldVerifier.vue"
+import { type FieldVerifierInfo } from "@/components/FieldVerifier.vue"
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+import { type Account } from "@/models/account"
+import { useCurrentUserStore } from "@/stores/currentUser"
 
 const router = useRouter()
 const currentUserStore = useCurrentUserStore()
 
-const username = ref<string>("");
-const password = ref<string>("");
-const passwordAgain = ref<string>("");
+const username = ref<string>("")
+const password = ref<string>("")
+const passwordAgain = ref<string>("")
 
 const showErrorIcon = ref<boolean>(false)
 
 const usernameVerifierInfos :  FieldVerifierInfo[] = [
     {
-        isValid: () => {
-            username.value.replace(/\s+/g, "")
-            return (username.value != "")
-        },
-        description: "Das Feld Benutzername ist obligatorisch."
+        isValid: () => username.value.length >= 3,
+        description: "Der Benutzername muss aus mindestens drei Zeichen bestehen."
+    },
+    {
+        isValid: () => /^[a-z0-9_-]*$/.test(username.value),
+        description: "Der Benutzername darf nur Zahlen, Buchstaben ohne Akzent und Unterstriche enthalten."
+    },
+    {
+        isValid: () => username.value.length <= 25,
+        description: "Der Benutzername darf nicht mehr als 25 Zeichen lang sein."
     }
 ]
 
@@ -64,7 +69,16 @@ function allFieldsAreValid() : boolean {
             && verifyTwoPasswords.isValid()
 }
 
+let usernameAlreadyUsed = ref<boolean>(false)
+let unexpectedError = ref<boolean>(false)
+
 async function submitFrom() {
+
+    usernameAlreadyUsed.value = false
+    unexpectedError.value = false
+    showErrorIcon.value = false
+
+    username.value = username.value.trim()
 
     if (!allFieldsAreValid()) {
         showErrorIcon.value = true
@@ -89,10 +103,13 @@ async function submitFrom() {
         currentUserStore.saveUserData(currentAccount, currentUserData.token)
 
         router.push('/')
+    } else if (response.status == 409) {    // If the status code is 409, there is a conflict error and the username is already used
+        usernameAlreadyUsed.value = true
+        showErrorIcon.value = true
     } else {
-        // TODO afficher l'erreur ici
+        unexpectedError.value = true
+        showErrorIcon.value = true
     }
-
 }
 </script>   
 
@@ -102,6 +119,12 @@ async function submitFrom() {
 
         <label for="username" class="text-field-label">Benutzername:</label>
         <input type="text" v-model="username" id="username" class="text-field">
+        <FieldVerifier 
+            :isValid="!usernameAlreadyUsed"
+            :showErrorIcon="showErrorIcon"
+            :hideWhenNoError="true"
+            description="Der Benutzername wird bereits verwendet."
+        />
         <div v-for="usernameVerifierInfo in usernameVerifierInfos" v-bind:key="usernameVerifierInfo.description">
             <FieldVerifier 
                 :isValid="usernameVerifierInfo.isValid()"
@@ -130,6 +153,13 @@ async function submitFrom() {
             :showErrorIcon="showErrorIcon"
             :hideWhenNoError="true"
             :description="verifyTwoPasswords.description"
+        />
+
+        <FieldVerifier 
+            :isValid="!unexpectedError"
+            :showErrorIcon="showErrorIcon"
+            :hideWhenNoError="true"
+            description="Ein unerwarteter Fehler ist aufgetreten."
         />
 
         <div class="button-container">

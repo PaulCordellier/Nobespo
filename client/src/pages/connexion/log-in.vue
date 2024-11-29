@@ -1,9 +1,20 @@
 <script setup lang="ts">
-import { ref } from 'vue';
-import { MdFilledButton } from '@material/web/button/filled-button';
+import FieldVerifier from "@/components/FieldVerifier.vue"
+import { ref } from 'vue'
+import { MdFilledButton } from '@material/web/button/filled-button'
+import { useRouter } from 'vue-router'
+import { type Account } from "@/models/account"
+import { useCurrentUserStore } from "@/stores/currentUser"
 
-const username = ref<string>("");
-const password = ref<string>("");
+const router = useRouter()
+const currentUserStore = useCurrentUserStore()
+
+const username = ref<string>("")
+const password = ref<string>("")
+
+let userAccountNotFound = ref<boolean>(false)
+let unexpectedError = ref<boolean>(false)
+let showErrorIcon = ref<boolean>(false)
 
 async function submitFrom() {
 
@@ -19,9 +30,20 @@ async function submitFrom() {
     })
 
     if (response.ok) {
-        // TODO
+        const currentUserData : any = await response.json()
+        const currentAccount : Account = currentUserData.account
+
+        currentUserStore.saveUserData(currentAccount, currentUserData.token)
+
+        router.push('/')
+    } else if (response.status == 404) {    // If the status code is 404, a username with the password wasn't found
+        userAccountNotFound.value = true
+        showErrorIcon.value = true
+        console.log("AHA : " + response.status)
     } else {
-        // TODO
+        unexpectedError.value = true
+        showErrorIcon.value = true
+        console.log(response.status)
     }
 }
 </script>
@@ -35,6 +57,20 @@ async function submitFrom() {
 
         <label for="password" class="text-field-label">Passwort:</label>
         <input type="password" v-model="password" id="password" class="text-field">
+
+        <FieldVerifier 
+            :isValid="!userAccountNotFound"
+            :showErrorIcon="showErrorIcon"
+            :hideWhenNoError="true"
+            description="Kein Benutzer mit diesem Passwort gefunden"
+        />
+
+        <FieldVerifier 
+            :isValid="!unexpectedError"
+            :showErrorIcon="showErrorIcon"
+            :hideWhenNoError="true"
+            description="Ein unerwarteter Fehler ist aufgetreten."
+        />
 
         <div class="button-container">
             <md-filled-button @click="submitFrom">Einloggen</md-filled-button>

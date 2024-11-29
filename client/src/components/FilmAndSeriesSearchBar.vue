@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { MdOutlinedTextField } from '@material/web/textfield/outlined-text-field';
-import { MdIcon } from '@material/web/icon/icon';
+import { MdIcon } from '@material/web/icon/icon';       // TODO Avoid using material design
 import { onMounted } from 'vue';
 import { useRouter, useRoute } from "vue-router"
 

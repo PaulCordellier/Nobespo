@@ -16,7 +16,9 @@ public partial class ApiDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<Account>();
+        modelBuilder.Entity<Account>()
+            .HasIndex(x => x.Username)
+            .IsUnique();
 
         OnModelCreatingPartial(modelBuilder);
     }

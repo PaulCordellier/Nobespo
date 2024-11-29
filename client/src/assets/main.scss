@@ -1,6 +1,6 @@
-@import './base.scss';
-@import './text-fields.scss';
-@import './connexion-block.scss';
+@use 'base.scss';
+@use 'text-fields.scss';
+@use 'connexion-block.scss';
 
 body {
     margin: 0;

@@ -3,12 +3,19 @@ services:
     container_name: nobespo-client-container
     build: ./client
     ports:
-      - 8221:80
+      - 8220:80     # HTTP
+      - 8221:443    # HTTPS
+    volumes:
+      - ./client/ssl-certificate.crt:/etc/ssl/certs/certificate.crt
+      - ./client/ssl-private-key.key:/etc/ssl/private/private-key.key
     depends_on:
       - server
   server:
     container_name: nobespo-server-container
     build: ./Server
+    ports:
+      - 8000:80     # HTTP
+      - 8001:443    # HTTPS
     depends_on:
       - database
     secrets:
@@ -16,6 +23,16 @@ services:
       - TmdbApiReadToken
       - JwtSecretKey
       - DbPassword
+    # generate ssl certificate:
+    # code from : https://learn.microsoft.com/en-us/aspnet/core/security/docker-https?view=aspnetcore-8.0#macos-or-linux
+    volumes:
+      - ./Server/ssl-certificate.pfx:/https/aspnetapp.pfx
+    environment:
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=NobespoSslPassword
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
+      - ASPNETCORE_URLS=https://+;http://+
+    stdin_open: true    # Equivalent to -i (keep STDIN open)
+    tty: true           # Equivalent to -t (allocate a pseudo-TTY)
   database:
     container_name: nobespo-db-container
     image: postgres:17

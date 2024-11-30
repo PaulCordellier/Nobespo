@@ -1,8 +1,7 @@
 <script setup lang="ts">
-  import '@material/web/button/outlined-button.js';
-  import '@material/web/checkbox/checkbox.js';
-  import '@material/web/dialog/dialog.js';
-  import '@material/web/textfield/filled-text-field.js';
+import { MdOutlinedButton } from '@material/web/button/outlined-button'
+import { MdCheckbox } from '@material/web/checkbox/checkbox'
+import { MdDialog } from '@material/web/dialog/dialog'
 </script>
 
 <template>
@@ -14,11 +13,11 @@
       <br />
       <p class="stars" style="font-size: 1.5em;">★★★★★</p>
       <br />
-      <md-filled-text-field type="textarea"
+      <!-- <md-filled-text-field type="textarea"
                             label="Kommentar"
                             rows="3"
                             style="resize: vertical; width: 100%">
-      </md-filled-text-field>
+      </md-filled-text-field> -->
       <br />
       <br />
       <label>

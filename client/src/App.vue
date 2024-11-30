@@ -3,8 +3,8 @@ import { RouterView, RouterLink } from 'vue-router'
 import { MdFilledTonalButton } from '@material/web/button/filled-tonal-button'
 import { MdMenu } from '@material/web/menu/menu'
 import { MdMenuItem } from '@material/web/menu/menu-item'
-import { useCurrentUserStore } from "@/stores/currentUser";
-import { useRouter } from "vue-router";
+import { useCurrentUserStore } from "@/stores/currentUser"
+import { useRouter } from "vue-router"
 
 const currentUserStore = useCurrentUserStore()
 
@@ -29,7 +29,7 @@ function disconnect() {
  
     <md-filled-tonal-button v-if="currentUserStore.isConnected" @click="showAccountMenu" id="account-button">
         <div id="account-button-content">
-            <img :src="'./images/mini-icons/default-user.png'" alt="">
+            <img src="@/assets/images/icons/default-user.png">
             <p>{{ currentUserStore.username }}</p>
         </div>
         <md-menu id="account-menu" anchor="account-button">

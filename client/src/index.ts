@@ -44,6 +44,10 @@ const routes = [
     name: 'search-watch-lists',
     component: () => import('@/pages/watch-list/search-watch-lists.vue')
   },
+  {
+    path: '/watch-lists/:id',
+    component: () => import('@/pages/watch-list/watch-list.vue')
+  },
 ];
 
 export default createRouter({

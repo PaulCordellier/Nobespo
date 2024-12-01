@@ -1,12 +1,13 @@
 <script setup lang="ts">
-import { MdDialog } from '@material/web/dialog/dialog';
-import { MdOutlinedButton } from '@material/web/button/outlined-button';
+import { MdOutlinedButton } from '@material/web/button/outlined-button'
 
-import WriteCommentDialog from '@/components/WriteCommentDialog.vue';
-import CommentSection from "@/components/CommentSection.vue";
+import CommentSection from "@/components/CommentSection.vue"
 
-import { onMounted, ref } from "vue";
-import { useRoute } from "vue-router";
+import { onMounted, ref } from "vue"
+import { useRoute } from "vue-router"
+
+import tmdbDateFromatToGermanDate from "@/misc/change-date-format"
+import StarsRatingHover from '@/components/rating/StarsRatingHover.vue'
 
 const route = useRoute()
 
@@ -22,25 +23,27 @@ async function fetchTrending() {
         media.value = await response.json()
     }
 }
-
-function onWriteCommentsButtonClick() {
-    const dialogWriteComment: MdDialog = document.getElementById("write-comment-dialog") as MdDialog
-    dialogWriteComment.show();
-}
 </script>
 
 <template>
     <div v-if="media" class="basic-padding-container">
-        <WriteCommentDialog />
-        <div id="media-serie-watchlist-full-description">   <!-- todo vérifier le nom de cette classe -->
-            <img :src="`https://image.tmdb.org/t/p/w154${media.poster_path}`"/>
-            <div>
-                <h1>{{ media.title }}</h1>
-                <p>{{ media.overview }}</p>
+        <div id="media-or-watchlist-full-description">
+            <img :src="`https://image.tmdb.org/t/p/w185${media.poster_path}`" id="poster"/>
+            <div id="details">
+                <p id="first-line">
+                    <span id="title">{{ media.title }}</span>
+                    <span class="separator" v-if="media.runtime != 0"> • </span>
+                    <span id="length-info" v-if="media.runtime != 0">{{ media.runtime }} mins</span>
+                    <span class="separator"> • </span>
+                    <span id="release-date">{{ tmdbDateFromatToGermanDate(media.release_date) }}</span>
+                </p>
 
-                <p class="stars" style="font-size: 1.5em;">★★★★★</p>
+                <p id="description">{{ media.overview }}</p>
+
+                <p>Wie bewerten Sie diesen Film?</p>
+                <StarsRatingHover starEnabledColor="white" starDisabledColor="grey"/>
+
                 <md-outlined-button>Erstellen</md-outlined-button>
-                <md-outlined-button @click="onWriteCommentsButtonClick()">Beschreibung schreiben</md-outlined-button>
             </div>
         </div>
         <CommentSection />

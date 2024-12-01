@@ -1,18 +1,19 @@
 <script setup lang="ts">
-import { RouterView, RouterLink } from 'vue-router'
+import { useTemplateRef } from 'vue'
+import { RouterView, RouterLink, useRouter } from 'vue-router'
+
 import { MdFilledTonalButton } from '@material/web/button/filled-tonal-button'
 import { MdMenu } from '@material/web/menu/menu'
 import { MdMenuItem } from '@material/web/menu/menu-item'
+
 import { useCurrentUserStore } from "@/stores/currentUser"
-import { useRouter } from "vue-router"
 
 const currentUserStore = useCurrentUserStore()
-
 const router = useRouter()
+const accountMenu = useTemplateRef('account-menu')
 
 function showAccountMenu() {
-    const accountMenu = document.getElementById("account-menu") as MdMenu
-    accountMenu.open = !accountMenu.open; 
+    accountMenu.value!.open = !accountMenu.value!.open; 
 }
 
 function disconnect() {
@@ -32,7 +33,7 @@ function disconnect() {
             <img src="@/assets/images/icons/default-user.png">
             <p>{{ currentUserStore.username }}</p>
         </div>
-        <md-menu id="account-menu" anchor="account-button">
+        <md-menu id="account-menu" anchor="account-button" ref="account-menu">
             <md-menu-item>
                 <div slot="headline">Kontoeinstellungen</div> <!-- TODO -->
             </md-menu-item>
@@ -41,6 +42,7 @@ function disconnect() {
             </md-menu-item>
         </md-menu>
     </md-filled-tonal-button>
+
     <RouterLink tabindex="-1" to="/log-in" v-if="!currentUserStore.isConnected"> <md-filled-tonal-button> Log in </md-filled-tonal-button> </RouterLink>
     <RouterLink tabindex="-1" to="/sign-up" v-if="!currentUserStore.isConnected"> <md-filled-tonal-button> Sign up </md-filled-tonal-button> </RouterLink>
   </header>

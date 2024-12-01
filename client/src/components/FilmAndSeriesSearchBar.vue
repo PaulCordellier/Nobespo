@@ -1,22 +1,21 @@
 <script setup lang="ts">
-import { onMounted } from 'vue';
+import { useTemplateRef } from 'vue'
 import { useRouter, useRoute } from "vue-router"
+
+// TODO rename and add properties to this component so it also searches for watch lists
 
 const router = useRouter()
 const route = useRoute()
-
-let textField : HTMLInputElement
-
-onMounted(() => {
-    textField = document.getElementById("search-bar") as HTMLInputElement
-})
+const textField = useTemplateRef('search-bar')
 
 function onEnterPressed() {
-    if (!textField || textField.value.length <= 0) {
+    let writtenText = textField.value!.value
+
+    if (!textField || writtenText.length <= 0) {
         return
     }
     
-    let query = textField.value
+    let query = writtenText
     query = encodeURI(query)
     
     router.push({ name: 'search-films-series', params: { query }})
@@ -27,6 +26,7 @@ function onEnterPressed() {
         <input
             placeholder="Films oder Series suchen"
             id="search-bar"
+            ref="search-bar"
             type="search"
             :value="route.params.query ? decodeURI(route.params.query as string) : ''"
             @keyup.enter="onEnterPressed"

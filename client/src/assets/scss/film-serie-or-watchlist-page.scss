@@ -1,0 +1,30 @@
+#media-or-watchlist-full-description {
+    display: flex;
+    align-items: flex-start;
+    gap: 30px;
+    padding-top: 30px;
+
+    #poster {
+        border-radius: 15px;
+    }
+
+    #first-line {
+        vertical-align: text-bottom;
+
+        #title {
+            font-size: 2em;
+            font-weight: 700;
+        }
+
+        #length-info, #release-date {
+            position: relative;
+            bottom: 3px;
+            font-size: 1.3em;
+            font-weight: 600;
+        }
+        
+        .separator {
+            font-size: 1.8em;
+        }
+    }
+}

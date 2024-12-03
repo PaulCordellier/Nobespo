@@ -42,13 +42,13 @@ public sealed partial class ApiDbContext : DbContext
 
         modelBuilder.Entity<FilmComment>(entity =>
         {
-            entity.Property(x => x.PublishDateAndTime).HasDefaultValueSql("CURRENT_DATE");
+            entity.Property(x => x.PublishDate).HasDefaultValueSql("CURRENT_DATE");
             entity.HasIndex(x => x.TmdbFilmId);
         });
 
         modelBuilder.Entity<SerieComment>(entity => 
         {
-            entity.Property(x => x.PublishDateAndTime).HasDefaultValueSql("CURRENT_DATE");
+            entity.Property(x => x.PublishDate).HasDefaultValueSql("CURRENT_DATE");
             entity.HasIndex(x => x.TmdbSerieId);
         });
     }

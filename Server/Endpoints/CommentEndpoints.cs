@@ -26,19 +26,23 @@ public static class CommentEndpoints
 
     private static async Task<IResult> GetFilmComment(ApiDbContext dbContext, int tmdbId)
     {
-        FilmComment[] mostRecentComents = await dbContext.FilmsComments
-                                                         .OrderBy(x => x.PublishDateAndTime)
-                                                         .Take(10)
-                                                         .ToArrayAsync();
+        var mostRecentComents = await dbContext.FilmsComments
+                                               .Where(x => x.TmdbFilmId == tmdbId)
+                                               .OrderBy(x => x.PublishDate)
+                                               .Take(10)
+                                               .Select(x => new { x.Text, x.PublishDate, x.User.Username })
+                                               .ToArrayAsync();
         return Results.Ok(mostRecentComents);
     }
 
     private static async Task<IResult> GetSerieComment(ApiDbContext dbContext, int tmdbId)
     {
-        SerieComment[] mostRecentComents = await dbContext.SeriesComments
-                                                          .OrderBy(x => x.PublishDateAndTime)
-                                                          .Take(10)
-                                                          .ToArrayAsync();
+        var mostRecentComents = await dbContext.SeriesComments
+                                               .Where(x => x.TmdbSerieId == tmdbId)
+                                               .OrderBy(x => x.PublishDate)
+                                               .Take(10)
+                                               .Select(x => new { x.Text, x.PublishDate, x.User.Username })
+                                               .ToArrayAsync();
         return Results.Ok(mostRecentComents);
     }
 
@@ -53,6 +57,8 @@ public static class CommentEndpoints
         {
             return Results.BadRequest("Bad token");
         }
+
+        // TODO Sanitize string here
 
         var commentToAdd = new FilmComment
         {
@@ -79,6 +85,8 @@ public static class CommentEndpoints
         {
             return Results.BadRequest("Bad token");
         }
+
+        // TODO Sanitize string here
 
         var commentToAdd = new SerieComment
         {

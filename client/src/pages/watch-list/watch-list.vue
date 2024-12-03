@@ -31,6 +31,6 @@ let filmAndSeries = ref<any[]>([{"backdrop_path": "/sYXLeu5usz6yEz0k00FYvtEdodD.
             </div>
         </div>
         <FilmAndSeriesList :medias="filmAndSeries"/>
-        <CommentSection />
+        <!-- <CommentSection :urlToGetComments=""/> TODO -->
     </div>
 </template>

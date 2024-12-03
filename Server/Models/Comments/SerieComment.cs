@@ -15,7 +15,7 @@ public class SerieComment
     public required string Text { get; set; }
 
     [Column("publish_date_and_time")]
-    public DateOnly PublishDateAndTime { get; set; }
+    public DateOnly PublishDate { get; set; }
 
     [Column("tmdb_serie_id")]
     public required int TmdbSerieId { get; set; }

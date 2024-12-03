@@ -55,6 +55,8 @@ async function fetchTrending() {
                 <md-outlined-button>Erstellen</md-outlined-button>
             </div>
         </div>
-        <CommentSection />
+        <CommentSection
+            :urlToGetComments="`/api/comment/get-comments/serie/${media.id}`"
+            :urlToPublishComments="`/api/comment/publish-comment/serie/${media.id}`" />
     </div>
 </template>

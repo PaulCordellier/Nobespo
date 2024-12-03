@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Server.Models;
 
 [Table("account")]
-public sealed class Account
+public class Account
 {
     [Key]
     [Column("account_id")]
@@ -16,4 +16,7 @@ public sealed class Account
 
     [Column("hashed_password")]
     public required byte[] HashedPassword { get; set; }
+
+    public ICollection<SerieComment> SeriesComments { get; set; } = [];
+    public ICollection<FilmComment> FilmsComments { get; set; } = [];
 }

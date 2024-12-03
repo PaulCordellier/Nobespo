@@ -16,14 +16,6 @@ public static class AccountEndpoints
         route.MapPost("login", Login);
 
         route.MapPost("signup", SignUp);
-
-        // Route to modify the account :
-
-        //route.MapPost("modify", (ClaimsPrincipal user) =>
-        //{
-        //    Claim? usernameClaim = user.Claims.FirstOrDefault(claim => claim.Type == "account_username");
-        //})
-        //.RequireAuthorization("user");
     }
 
     private static async Task<IResult> Login([FromBody] AccountConnexionRequestData requestData,
@@ -61,7 +53,7 @@ public static class AccountEndpoints
         await dbContext.Accounts.AddAsync(newAccount);
         await dbContext.SaveChangesAsync();
 
-        return Results.Ok(new { Token = jwtTokenService.GenerateToken(newAccount), Account = new { newAccount.Id, newAccount.Username} });
+        return Results.Ok(new { Token = jwtTokenService.GenerateToken(newAccount), Account = new { newAccount.Id, newAccount.Username } });
     }
 
     class AccountConnexionRequestData

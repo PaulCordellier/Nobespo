@@ -122,12 +122,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         options.RequireHttpsMetadata = false;   // Set to true in production
     });
 
-builder.Services.AddAuthorizationBuilder()
-    .AddPolicy("user", policy =>
-    {
-        policy.RequireAuthenticatedUser();
-        policy.RequireClaim("role", "user");
-    });
+builder.Services.AddAuthorization();
 
 var app = builder.Build();
 

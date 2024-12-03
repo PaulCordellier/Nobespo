@@ -5,18 +5,12 @@ using Server.Models;
 
 namespace Server.Services;
 
-public sealed class JwtTokenService
+public sealed class JwtTokenService(SecurityKey jwtSecretKey, IConfiguration configuration)
 {
-    private SecurityKey _jwtSecretKey;
-    private IConfiguration _configuration;
+    private readonly SecurityKey _jwtSecretKey = jwtSecretKey;
+    private readonly IConfiguration _configuration = configuration;
 
-    public JwtTokenService(SecurityKey jwtSecretKey, IConfiguration configuration)
-    {
-        _jwtSecretKey = jwtSecretKey;
-        _configuration = configuration;
-    }
-
-    // https://github.com/adityaoberai/JWTAuthSample/blob/main/JWTAuth/Business/AuthService/Implementation/AuthService.cs
+    // Model for this : https://github.com/adityaoberai/JWTAuthSample/blob/main/JWTAuth/Business/AuthService/Implementation/AuthService.cs
 
     public string GenerateToken(Account account)
     {
@@ -25,8 +19,8 @@ public sealed class JwtTokenService
         {
             Subject = new ClaimsIdentity(
             [
-                new Claim("account_id", account.Id.ToString()),
-                new Claim("account_username", account.Username),
+                new Claim("user_id", account.Id.ToString()),
+                new Claim("username", account.Username),
                 new Claim("role", "user")
             ]),
             Expires = DateTime.UtcNow.AddHours(1),

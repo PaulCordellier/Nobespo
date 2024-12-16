@@ -4,10 +4,11 @@ using Server.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace Server.Endpoints;
 
-public static class AccountEndpoints
+public static partial class AccountEndpoints
 {
     public static void MapAccountEndpoints(this IEndpointRouteBuilder app)
     {
@@ -22,8 +23,14 @@ public static class AccountEndpoints
                                              JwtTokenService jwtTokenService,
                                              ApiDbContext dbContext)
     {
-        byte[] hashedPassword = PlainTextPasswordToHash(requestData.Password);
+        if (!UsernameIsValid(requestData.Username))
+        {
+            // We return 404 Not Found because the login can't be found in the database
+            return Results.NotFound("Bad login format");
+        }
 
+        byte[] hashedPassword = PlainTextPasswordToHash(requestData.Password);
+            
         Account? foundAccount = await dbContext.Accounts.FirstOrDefaultAsync(x => x.Username == requestData.Username && x.HashedPassword == hashedPassword);
 
         if (foundAccount is null)
@@ -31,14 +38,18 @@ public static class AccountEndpoints
             return Results.NotFound();
         }
 
-        // TODO I don't thing the client needs the ID to work
-        return Results.Ok(new { Token = jwtTokenService.GenerateToken(foundAccount), Account = new { foundAccount.Id, foundAccount.Username } });
+        return Results.Ok(new { Token = jwtTokenService.GenerateToken(foundAccount), foundAccount.Username });
     }
 
     private static async Task<IResult> SignUp([FromBody] AccountConnexionRequestData requestData,
                                               JwtTokenService jwtTokenService,
                                               ApiDbContext dbContext)
     {
+        if (!UsernameIsValid(requestData.Username))
+        {
+            return Results.BadRequest("Bad login format");
+        }
+
         bool usernameAlreadyExists = await dbContext.Accounts.AnyAsync(x => x.Username == requestData.Username);
 
         if (usernameAlreadyExists)
@@ -53,7 +64,7 @@ public static class AccountEndpoints
         await dbContext.Accounts.AddAsync(newAccount);
         await dbContext.SaveChangesAsync();
 
-        return Results.Ok(new { Token = jwtTokenService.GenerateToken(newAccount), Account = new { newAccount.Id, newAccount.Username } });
+        return Results.Ok(new { Token = jwtTokenService.GenerateToken(newAccount), newAccount.Username });
     }
 
     class AccountConnexionRequestData
@@ -66,5 +77,13 @@ public static class AccountEndpoints
     {
         byte[] tmpSource = Encoding.UTF8.GetBytes(plainTextPassword);
         return SHA256.HashData(tmpSource);  // I could also use SHA-384 or SHA-512 here
+    }
+
+    [GeneratedRegex("^[a-z0-9_-]*$")]
+    private static partial Regex UsernameRegex();
+
+    private static bool UsernameIsValid(in string username)
+    {
+        return username.Length <= 25 && UsernameRegex().Match(username).Success;
     }
 }

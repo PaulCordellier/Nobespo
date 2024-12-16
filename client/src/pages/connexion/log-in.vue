@@ -3,7 +3,6 @@ import FieldVerifier from "@/components/FieldVerifier.vue"
 import { ref } from 'vue'
 import { MdFilledButton } from '@material/web/button/filled-button'
 import { useRouter } from 'vue-router'
-import { type Account } from "@/models/account"
 import { useCurrentUserStore } from "@/stores/currentUser"
 
 const router = useRouter()
@@ -30,20 +29,16 @@ async function submitFrom() {
     })
 
     if (response.ok) {
-        const currentUserData : any = await response.json()
-        const currentAccount : Account = currentUserData.account
-
-        currentUserStore.saveUserData(currentAccount, currentUserData.token)
+        const currentUserData = await response.json()
+        currentUserStore.saveUserData(currentUserData.username, currentUserData.token)
 
         router.push('/')
     } else if (response.status == 404) {    // If the status code is 404, a username with the password wasn't found
         userAccountNotFound.value = true
         showErrorIcon.value = true
-        console.log("AHA : " + response.status)
     } else {
         unexpectedError.value = true
         showErrorIcon.value = true
-        console.log(response.status)
     }
 }
 </script>

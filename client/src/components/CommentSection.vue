@@ -1,9 +1,6 @@
 <script setup lang="ts">
-import { type Comment } from '@/models/comment'
 import { onMounted, ref, useTemplateRef } from 'vue'
-
 import { useCurrentUserStore } from "@/stores/currentUser"
-
 import { MdFilledButton } from '@material/web/button/filled-button'
 
 const currentUserStore = useCurrentUserStore()
@@ -14,6 +11,12 @@ const { urlToGetComments, urlToPublishComments } = defineProps<{
     urlToGetComments: string
     urlToPublishComments: string
 }>()
+
+type Comment = {
+    text: string
+    username: string
+    publishDate: string
+}
 
 const comments = ref<Comment[] | null>(null);
 

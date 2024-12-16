@@ -58,7 +58,8 @@ public static class CommentEndpoints
             return Results.BadRequest("Bad token");
         }
 
-        // TODO Sanitize string here
+        // Sanitizing string here:
+        commentText = commentText.Trim().Replace("'", "''");
 
         var commentToAdd = new FilmComment
         {
@@ -86,7 +87,8 @@ public static class CommentEndpoints
             return Results.BadRequest("Bad token");
         }
 
-        // TODO Sanitize string here
+        // Sanitizing string here:
+        commentText = commentText.Trim().Replace("'", "''");
 
         var commentToAdd = new SerieComment
         {

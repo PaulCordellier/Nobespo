@@ -4,7 +4,6 @@ import FieldVerifier from "@/components/FieldVerifier.vue"
 import { type FieldVerifierInfo } from "@/components/FieldVerifier.vue"
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { type Account } from "@/models/account"
 import { useCurrentUserStore } from "@/stores/currentUser"
 
 const router = useRouter()
@@ -97,10 +96,8 @@ async function submitFrom() {
     })
 
     if (response.ok) {
-        const currentUserData : any = await response.json()
-        const currentAccount : Account = currentUserData.account
-
-        currentUserStore.saveUserData(currentAccount, currentUserData.token)
+        const currentUserData = await response.json()
+        currentUserStore.saveUserData(currentUserData.username, currentUserData.token)
 
         router.push('/')
     } else if (response.status == 409) {    // If the status code is 409, there is a conflict error and the username is already used

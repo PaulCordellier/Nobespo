@@ -11,7 +11,7 @@ export default defineConfig({
             template: {
                 compilerOptions: {
                     // treat all tags with  md- as custom elements
-                    isCustomElement: (tag) => tag.startsWith("md-"),
+                    isCustomElement: (tag) => tag.startsWith("md-") || tag.startsWith("l-"),
                     // This is used so the material design library can be used
                 },
             },

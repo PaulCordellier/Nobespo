@@ -1,14 +1,19 @@
 <script setup lang="ts">
 import FilmsAndSeriesSearchBar from "@/components/FilmAndSeriesSearchBar.vue"
 import FilmsAndSeriesList from "@/components/FilmAndSeriesList.vue"
-import { onMounted, ref } from "vue";
+import LoadingWrapper from "@/components/LoadingWrapper.vue"
+import { onMounted, ref } from "vue"
 
 const apiResultsLeftSide = ref<any[]>()
 const apiResultsRightSide = ref<any[]>()
 
+const loadingErrorMessage = ref<string | undefined>()
+
 onMounted(fetchTrending)
 
 async function fetchTrending() {
+
+    loadingErrorMessage.value = undefined
     
     const response = await fetch("/api/tmdb/trending", { method: "GET" })
 
@@ -20,6 +25,8 @@ async function fetchTrending() {
 
         apiResultsLeftSide.value = apiResults.slice(0, middleIndex)
         apiResultsRightSide.value = apiResults.slice(middleIndex)
+    } else {
+        loadingErrorMessage.value = "Fehler: Code " + response.status
     }
 }
 
@@ -28,10 +35,12 @@ async function fetchTrending() {
 <template>
     <FilmsAndSeriesSearchBar />
 
-    <div id="trending" v-if="apiResultsLeftSide && apiResultsRightSide">
-        <FilmsAndSeriesList :medias="apiResultsLeftSide" />
-        <FilmsAndSeriesList :medias="apiResultsRightSide" />
-    </div>
+    <LoadingWrapper :loadedRef="apiResultsLeftSide" :errorMessage="loadingErrorMessage">
+        <div id="trending">
+            <FilmsAndSeriesList :medias="apiResultsLeftSide" />
+            <FilmsAndSeriesList :medias="apiResultsRightSide" />
+        </div>
+    </LoadingWrapper>
 </template>
 
 

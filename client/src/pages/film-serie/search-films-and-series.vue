@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import FilmsAndSeriesSearchBar from "@/components/FilmAndSeriesSearchBar.vue"
-import FilmsAndSeriesList from "@/components/FilmAndSeriesList.vue"
+import ListOfFilmsAndSeries from "@/components/ListOfFilmsAndSeries.vue"
 import LoadingWrapper from "@/components/LoadingWrapper.vue"
 
 import { onMounted, watch, ref } from "vue";
@@ -36,7 +36,7 @@ async function fetchApi() {
     <div class="big-margin-container">
         <FilmsAndSeriesSearchBar />
         <LoadingWrapper :loaded-ref="apiResults" :error-message="loadingErrorMessage">
-            <FilmsAndSeriesList :medias="apiResults" />
+            <ListOfFilmsAndSeries :medias="apiResults" />
             <h1 v-if="apiResults!.length == 0" class="error-message">Nothing was found !</h1>
         </LoadingWrapper>
     </div>

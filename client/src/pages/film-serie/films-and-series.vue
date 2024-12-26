@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import FilmsAndSeriesSearchBar from "@/components/FilmAndSeriesSearchBar.vue"
-import FilmsAndSeriesList from "@/components/FilmAndSeriesList.vue"
+import ListOfFilmsAndSeries from "@/components/ListOfFilmsAndSeries.vue"
 import LoadingWrapper from "@/components/LoadingWrapper.vue"
 import { onMounted, ref } from "vue"
 
@@ -37,8 +37,8 @@ async function fetchTrending() {
         <FilmsAndSeriesSearchBar />
         <LoadingWrapper :loadedRef="apiResultsLeftSide" :errorMessage="loadingErrorMessage">
             <div id="trending">
-                <FilmsAndSeriesList :medias="apiResultsLeftSide" />
-                <FilmsAndSeriesList :medias="apiResultsRightSide" />
+                <ListOfFilmsAndSeries :medias="apiResultsLeftSide" />
+                <ListOfFilmsAndSeries :medias="apiResultsRightSide" />
             </div>
         </LoadingWrapper>
     </div>

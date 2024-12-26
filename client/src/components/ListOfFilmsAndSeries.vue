@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { RouterLink } from "vue-router";
+import { RouterLink } from "vue-router"
 import { MdRipple } from "@material/web/ripple/ripple"
 defineProps<{
     medias?: any[]
@@ -41,7 +41,6 @@ possible poster sizes : w92, w154, w185, w342, w500, w780, original
 }
 
 .film-or-serie {
-	position: relative;
 	display: flex;
 	gap: 15px;
 	padding: 15px;

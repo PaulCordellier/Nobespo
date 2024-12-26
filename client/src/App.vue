@@ -13,7 +13,13 @@ const router = useRouter()
 const accountMenu = useTemplateRef('account-menu')
 
 function showAccountMenu() {
-    accountMenu.value!.open = !accountMenu.value!.open; 
+    if (accountMenu.value) {
+        accountMenu.value.open = !accountMenu.value.open; 
+    }
+}
+
+function createWatchlist() {
+    router.push({ name: 'create-watchlist' })
 }
 
 function disconnect() {
@@ -33,9 +39,10 @@ function disconnect() {
             <img src="@/assets/images/icons/default-user.png">
             <p>{{ currentUserStore.username }}</p>
         </div>
+        <!-- TODO replace buggy md-menu? -->
         <md-menu id="account-menu" anchor="account-button" ref="account-menu">
-            <md-menu-item>
-                <div slot="headline">Kontoeinstellungen</div> <!-- TODO -->
+            <md-menu-item @click="createWatchlist">
+                <div slot="headline">Eine Watchlist erstellen</div>
             </md-menu-item>
             <md-menu-item @click="disconnect">
                 <div slot="headline">Sich abmelden</div>

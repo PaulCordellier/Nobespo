@@ -84,15 +84,15 @@ async function submitFrom() {
         return
     }
 
-    const account = {
+    const user = {
         "username": username.value,
         "password": password.value
     }
 
-    const response = await fetch("/api/account/signup", {
+    const response = await fetch("/api/user/signup", {
         method: "POST",
         headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify(account)
+        body: JSON.stringify(user)
     })
 
     if (response.ok) {
@@ -118,14 +118,14 @@ async function submitFrom() {
         <input type="text" v-model="username" id="username" class="text-field">
         <FieldVerifier 
             :isValid="!usernameAlreadyUsed"
-            :showErrorIcon="showErrorIcon"
+            :withErrorIcon="showErrorIcon"
             :hideWhenNoError="true"
             description="Der Benutzername wird bereits verwendet."
         />
         <div v-for="usernameVerifierInfo in usernameVerifierInfos" v-bind:key="usernameVerifierInfo.description">
             <FieldVerifier 
                 :isValid="usernameVerifierInfo.isValid()"
-                :showErrorIcon="showErrorIcon"
+                :withErrorIcon="showErrorIcon"
                 :hideWhenNoError="true"
                 :description="usernameVerifierInfo.description"
             />
@@ -136,7 +136,7 @@ async function submitFrom() {
         <div v-for="passwordVerifierInfo in passwordVerifierInfos" v-bind:key="passwordVerifierInfo.description">
             <FieldVerifier 
                 :isValid="passwordVerifierInfo.isValid()"
-                :showErrorIcon="showErrorIcon"
+                :withErrorIcon="showErrorIcon"
                 :hideWhenNoError="false"
                 :description="passwordVerifierInfo.description"
             />
@@ -147,14 +147,14 @@ async function submitFrom() {
 
         <FieldVerifier 
             :isValid="verifyTwoPasswords.isValid()"
-            :showErrorIcon="showErrorIcon"
+            :withErrorIcon="showErrorIcon"
             :hideWhenNoError="true"
             :description="verifyTwoPasswords.description"
         />
 
         <FieldVerifier 
             :isValid="!unexpectedError"
-            :showErrorIcon="showErrorIcon"
+            :withErrorIcon="showErrorIcon"
             :hideWhenNoError="true"
             description="Ein unerwarteter Fehler ist aufgetreten."
         />

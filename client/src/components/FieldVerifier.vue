@@ -1,38 +1,38 @@
 <script setup lang="ts">
 import { onMounted, ref, watch } from 'vue'
+import noErrorImagePath from "@/assets/images/icons/accepted.png"
+import errorImagePath from "@/assets/images/icons/error.png"
+import noSignalImagePath from "@/assets/images/icons/info.svg"
 
 export type FieldVerifierInfo = {
     isValid: () => boolean,
     description: string
 }
 
-const { isValid, showErrorIcon, hideWhenNoError, description } = defineProps<{
+const { isValid, withErrorIcon, hideWhenNoError, description } = defineProps<{
     isValid: boolean,
-    showErrorIcon: boolean,
+    withErrorIcon: boolean,
     hideWhenNoError: boolean,
     description: string
 }>()
 
-const noErrorImagePath = "images/mini-icons/accepted.png"
-const errorImagePath = "images/mini-icons/error.png"
-const noSignalImagePath = "images/mini-icons/circle.svg"
 
 onMounted(setBulletImagePath)
 
 const bulletImagePath = ref<string>()
 const showCompoent = ref<boolean>()
 
-watch(() => showErrorIcon, setBulletImagePath)
+watch(() => withErrorIcon, setBulletImagePath)
 watch(() => isValid, setBulletImagePath)
 
 function setBulletImagePath() {
 
     if (hideWhenNoError) {
 
-        if (showErrorIcon && !isValid) {
+        if (withErrorIcon && !isValid) {
             bulletImagePath.value = errorImagePath
             showCompoent.value = true
-        } else if (showErrorIcon) {
+        } else if (withErrorIcon) {
             showCompoent.value = false
         }
 
@@ -42,7 +42,7 @@ function setBulletImagePath() {
         
         if (isValid) {
             bulletImagePath.value = noErrorImagePath
-        } else if (showErrorIcon) {
+        } else if (withErrorIcon) {
             bulletImagePath.value = errorImagePath
         } else {
             bulletImagePath.value = noSignalImagePath

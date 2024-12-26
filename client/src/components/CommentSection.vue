@@ -1,9 +1,13 @@
 <script setup lang="ts">
 import { onMounted, ref, useTemplateRef } from 'vue'
+import { useRouter } from "vue-router"
 import { useCurrentUserStore } from "@/stores/currentUser"
-import { MdFilledButton } from '@material/web/button/filled-button'
+import onLongTextAreaInput from "@/misc/onLongTextAreaInput"
+import ButtonWithLoading from "@/components/ButtonWithLoading.vue"
+import { ResponseState } from "@/components/ButtonWithLoading.vue"
 
 const currentUserStore = useCurrentUserStore()
+const router = useRouter()
 
 const commentTextArea = useTemplateRef("comment-text-area")
 
@@ -18,15 +22,18 @@ type Comment = {
     publishDate: string
 }
 
-const comments = ref<Comment[] | null>(null);
+const comments = ref<Comment[] | null>(null)
+const responseState = ref<ResponseState>(ResponseState.NoRequest)
 
 onMounted(getComments)
 
 async function getComments() {
+
     const response = await fetch(urlToGetComments, {method: 'GET'})
 
     if (response.ok) {
         comments.value = await response.json() as Comment[]
+        responseState.value = ResponseState.NoRequest
     } else {
         // TODO
     }
@@ -34,27 +41,33 @@ async function getComments() {
 
 const showPostButton = ref<boolean>(false)
 
-function onCommentTextAreaInput() {
-    commentTextArea.value!.style.height = "50px"
-    commentTextArea.value!.style.height = (commentTextArea.value!.scrollHeight + 5) + "px"
-    showPostButton.value = commentTextArea.value?.value != ''
+function onCommentTextAreaInput(event : Event) {
+    let commentTextArea = event.target as HTMLTextAreaElement
+    onLongTextAreaInput(commentTextArea)
+    showPostButton.value = commentTextArea.value != ''
 }
 
 async function publishComment() {
-    const options = {
+    responseState.value = ResponseState.Loading
+
+    const response = await fetch(urlToPublishComments, {
         method: 'POST',
         headers: {
             'Authorization': `Bearer ${currentUserStore.token}`,
             'Content-Type': 'application/json',
         },
         body: JSON.stringify(commentTextArea.value?.value)
-    };
-
-    const response = await fetch(urlToPublishComments, options)
+    })
 
     if (response.ok) {
-        console.log("yay")
         await getComments()
+        responseState.value = ResponseState.NoRequest
+        commentTextArea.value!.value = ''
+    } else if (response.status == 401 || (response.body && await response.json() == 'Bad token')) {
+        currentUserStore.disconnectUser()
+        router.push({ name: 'login' })
+    } else {
+        responseState.value = ResponseState.Error
     }
 }
 </script>
@@ -68,17 +81,21 @@ async function publishComment() {
                 <p>{{ currentUserStore.isConnected ? currentUserStore.username : "user name here" }}</p>
             </div>
             <textarea
-                id="comment-text-area"
-                class="text-field"
+                class="long-text-area"
                 ref="comment-text-area"
                 placeholder="Schreiben Sie Ihren Kommentar hier!"
-                maxlength="20000"
+                maxlength="10000"
                 contenteditable="true"
-                @input="onCommentTextAreaInput" />
-            <md-filled-button v-if="showPostButton" @click="publishComment" :disabled="!currentUserStore.isConnected ">
-                Posten
-            </md-filled-button>
+                @input="onCommentTextAreaInput"
+            ></textarea>
+
+            <ButtonWithLoading
+                v-if="showPostButton" 
+                :button-event="publishComment" 
+                button-text="Posten"
+                :response-state="responseState" />
         </div>
+        <!-- TODO use LoadingWrapper here -->
         <div class="comment" v-if="comments && comments.length >= 1" v-for="comment in comments">
             <div class="info-line-comment">
                 <img src="@/assets/images/icons/default-user.png" />
@@ -116,13 +133,6 @@ async function publishComment() {
         width: 50px;
         height: 50px;
 	}
-}
-
-#comment-text-area {
-    margin-top: 10px;
-    resize: none;
-    font: inherit;
-    height: 50px;
 }
 
 .stars {

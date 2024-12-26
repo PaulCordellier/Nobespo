@@ -10,6 +10,7 @@ const routes = [
   },
   {
     path: '/log-in',
+    name: 'login',
     component: () => import('@/pages/connexion/log-in.vue')
   },
   {
@@ -48,9 +49,14 @@ const routes = [
     path: '/watch-lists/:id',
     component: () => import('@/pages/watch-list/watch-list.vue')
   },
-];
+  {
+    path: '/watch-lists/create',
+    name: 'create-watchlist',
+    component: () => import('@/pages/watch-list/create-watchlist.vue')
+  }
+]
 
 export default createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes
-});
+})

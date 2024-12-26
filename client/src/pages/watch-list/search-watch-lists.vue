@@ -4,9 +4,8 @@ import ListOfWatchlists from "@/components/ListOfWatchlists.vue"
 </script>
 
 <template>
-    <FilmsAndSeriesSearchBar />
-    
-    <div class="basic-padding-container"> <!-- add v-if here -->
+    <div class="big-margin-container">
+        <FilmsAndSeriesSearchBar />
         <ListOfWatchlists />
     </div>
 </template>

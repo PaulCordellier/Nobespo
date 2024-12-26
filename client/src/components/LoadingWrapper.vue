@@ -36,11 +36,4 @@ defineProps<{
         margin: 15px auto;
     }
 }
-
-.loadingErrorMessage {
-    color: rgb(255, 80, 80);
-    font-size: 1.2em;
-    padding-top: 10px;
-    text-align: center;
-}
 </style>

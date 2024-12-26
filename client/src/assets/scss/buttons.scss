@@ -1,0 +1,12 @@
+// I created this because the button from google material design web is very buggy
+
+$basic-button-size: 45px;
+
+.primary-button {
+    background-color: rgb(250, 250, 250);
+    color: black;
+    height: $basic-button-size;
+    padding: 0 15px;
+    border: none;
+    border-radius: calc($basic-button-size / 2);
+}

@@ -33,11 +33,13 @@ async function fetchApi() {
 </script>
 
 <template>
-    <FilmsAndSeriesSearchBar />
-    <LoadingWrapper :loaded-ref="apiResults" :error-message="loadingErrorMessage">
-        <FilmsAndSeriesList :medias="apiResults" class="basic-padding-container"/>
-        <h1 v-if="apiResults!.length == 0" class="error-message">Nothing was found !</h1>
-    </LoadingWrapper>
+    <div class="big-margin-container">
+        <FilmsAndSeriesSearchBar />
+        <LoadingWrapper :loaded-ref="apiResults" :error-message="loadingErrorMessage">
+            <FilmsAndSeriesList :medias="apiResults" />
+            <h1 v-if="apiResults!.length == 0" class="error-message">Nothing was found !</h1>
+        </LoadingWrapper>
+    </div>
 </template>
 
 <style lang="scss">

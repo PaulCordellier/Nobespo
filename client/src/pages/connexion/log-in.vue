@@ -17,15 +17,15 @@ let showErrorIcon = ref<boolean>(false)
 
 async function submitFrom() {
 
-    const account = {
+    const user = {
         "username": username.value,
         "password": password.value
     }
 
-    const response = await fetch("/api/account/login", {
+    const response = await fetch("/api/user/login", {
         method: "POST",
         headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify(account)
+        body: JSON.stringify(user)
     })
 
     if (response.ok) {
@@ -55,14 +55,14 @@ async function submitFrom() {
 
         <FieldVerifier 
             :isValid="!userAccountNotFound"
-            :showErrorIcon="showErrorIcon"
+            :withErrorIcon="showErrorIcon"
             :hideWhenNoError="true"
             description="Kein Benutzer mit diesem Passwort gefunden"
         />
 
         <FieldVerifier 
             :isValid="!unexpectedError"
-            :showErrorIcon="showErrorIcon"
+            :withErrorIcon="showErrorIcon"
             :hideWhenNoError="true"
             description="Ein unerwarteter Fehler ist aufgetreten."
         />

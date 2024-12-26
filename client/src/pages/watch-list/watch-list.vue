@@ -11,7 +11,7 @@ let filmAndSeries = ref<any[]>([{"backdrop_path": "/sYXLeu5usz6yEz0k00FYvtEdodD.
 </script>
 
 <template>
-    <div class="basic-padding-container">
+    <div class="big-margin-container">
         <div id="media-or-watchlist-full-description">
             <!-- <img :src="`https://image.tmdb.org/t/p/w185${???}`" id="poster"/> -->
             <div id="details">

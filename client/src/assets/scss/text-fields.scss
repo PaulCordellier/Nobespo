@@ -3,10 +3,11 @@
     background-color: transparent;
     color: white;
     width: 100%;
+    font: inherit;
     font-size: 1.2em;
     padding: 10px;
     margin-bottom: 10px;
-    border: solid lightgray 3px;
+    border: solid lightgray 2px;
     border-radius: 10px;
 }
 
@@ -14,4 +15,27 @@
     display: block;
     padding: 10px 0;
     font-size: 1.2em;
+}
+
+.long-text-area {
+    @extend .text-field;
+    
+    resize: none;
+    height: 50px;
+}
+
+#search-bar {
+    @extend .text-field;
+
+    margin: 20px 0;
+    padding-left: 48px;
+
+    background: url(@/assets/images/icons/search.svg) no-repeat scroll 7px 7px;
+    background-size: 35px;
+}
+
+@media (max-width: 700px) {
+    #search-bar {
+        padding: 10px 10%;
+    }
 }

@@ -128,7 +128,6 @@ var app = builder.Build();
 
 app.UseDefaultFiles();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
@@ -146,7 +145,8 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapMediaEndpoints();
+app.MapWatchlistEndpoints();
 app.MapCommentEndpoints();
-app.MapAccountEndpoints();
+app.MapUserEndpoints();
 
 app.Run();

@@ -12,15 +12,15 @@ public sealed class JwtTokenService(SecurityKey jwtSecretKey, IConfiguration con
 
     // Model for this : https://github.com/adityaoberai/JWTAuthSample/blob/main/JWTAuth/Business/AuthService/Implementation/AuthService.cs
 
-    public string GenerateToken(Account account)
+    public string GenerateToken(User user)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
         var tokenDescriptor = new SecurityTokenDescriptor
         {
             Subject = new ClaimsIdentity(
             [
-                new Claim("user_id", account.Id.ToString()),
-                new Claim("username", account.Username),
+                new Claim("user_id", user.Id.ToString()),
+                new Claim("username", user.Username),
                 new Claim("role", "user")
             ]),
             Expires = DateTime.UtcNow.AddHours(1),

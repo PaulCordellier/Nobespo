@@ -48,10 +48,15 @@ dotnet tool install --global dotnet-ef
 
 Add a database migration:
 ```
-dotnet-ef migrations add NobespoDbMigrations --project Server
+dotnet ef migrations add NobespoDbMigrations --project Server
 ```
 
 Get the generated SQL script form the C# code:
 ```
-dotnet-ef migrations script --project Server --output ./database/generated_creation_script.sql
+dotnet ef migrations script --project Server --output ./database/generated_creation_script.sql
+```
+
+To remove the migrations:
+```
+dotnet ef migrations remove --project Server
 ```

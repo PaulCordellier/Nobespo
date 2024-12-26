@@ -8,13 +8,13 @@ public class SerieComment
 {
     [Key]
     [Column("serie_comment_id")]
-    public required int Id { get; set; }
+    public int Id { get; set; }
 
     [Column("comment_text")]
-    [StringLength(maximumLength: 20000)]
+    [StringLength(maximumLength: 10000)]
     public required string Text { get; set; }
 
-    [Column("publish_date_and_time")]
+    [Column("publish_date")]
     public DateOnly PublishDate { get; set; }
 
     [Column("tmdb_serie_id")]
@@ -23,6 +23,5 @@ public class SerieComment
     [Column("user_id")]
     public required int UserId { get; set; }
 
-    [Column("user_of_the_comment")]
-    public virtual Account User { get; set; } = null!;
+    public virtual User User { get; set; } = null!;
 }

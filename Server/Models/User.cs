@@ -3,15 +3,15 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Server.Models;
 
-[Table("account")]
-public class Account
+[Table("user_data")]    // PostgreSQL doesn't allow a table named "user" to be created so I chose the table name user_data
+public class User
 {
     [Key]
-    [Column("account_id")]
-    public required int Id { get; set; }
+    [Column("user_id")]
+    public int Id { get; set; }
 
     [Column("username")]
-    [StringLength(maximumLength: 25, MinimumLength = 3, ErrorMessage = "Für den Benutzernamen darf die Anzahl der Zeichen 25 nicht überschreiten.")]
+    [StringLength(maximumLength: 25, MinimumLength = 3)]
     public required string Username { get; set; }
 
     [Column("hashed_password")]
@@ -19,4 +19,5 @@ public class Account
 
     public ICollection<SerieComment> SeriesComments { get; set; } = [];
     public ICollection<FilmComment> FilmsComments { get; set; } = [];
+    public ICollection<Watchlist> Watchlists { get; set; } = [];
 }

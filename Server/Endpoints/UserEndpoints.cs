@@ -8,18 +8,18 @@ using System.Text.RegularExpressions;
 
 namespace Server.Endpoints;
 
-public static partial class AccountEndpoints
+public static partial class UserEndpoints
 {
-    public static void MapAccountEndpoints(this IEndpointRouteBuilder app)
+    public static void MapUserEndpoints(this IEndpointRouteBuilder app)
     {
-        var route = app.MapGroup("account").WithTags("Account");
+        var route = app.MapGroup("user").WithTags("User");
 
         route.MapPost("login", Login);
 
         route.MapPost("signup", SignUp);
     }
 
-    private static async Task<IResult> Login([FromBody] AccountConnexionRequestData requestData,
+    private static async Task<IResult> Login([FromBody] UserConnexionRequestData requestData,
                                              JwtTokenService jwtTokenService,
                                              ApiDbContext dbContext)
     {
@@ -31,17 +31,17 @@ public static partial class AccountEndpoints
 
         byte[] hashedPassword = PlainTextPasswordToHash(requestData.Password);
             
-        Account? foundAccount = await dbContext.Accounts.FirstOrDefaultAsync(x => x.Username == requestData.Username && x.HashedPassword == hashedPassword);
+        User? foundUser = await dbContext.Users.FirstOrDefaultAsync(x => x.Username == requestData.Username && x.HashedPassword == hashedPassword);
 
-        if (foundAccount is null)
+        if (foundUser is null)
         {
             return Results.NotFound();
         }
 
-        return Results.Ok(new { Token = jwtTokenService.GenerateToken(foundAccount), foundAccount.Username });
+        return Results.Ok(new { Token = jwtTokenService.GenerateToken(foundUser), foundUser.Username });
     }
 
-    private static async Task<IResult> SignUp([FromBody] AccountConnexionRequestData requestData,
+    private static async Task<IResult> SignUp([FromBody] UserConnexionRequestData requestData,
                                               JwtTokenService jwtTokenService,
                                               ApiDbContext dbContext)
     {
@@ -50,7 +50,7 @@ public static partial class AccountEndpoints
             return Results.BadRequest("Bad login format");
         }
 
-        bool usernameAlreadyExists = await dbContext.Accounts.AnyAsync(x => x.Username == requestData.Username);
+        bool usernameAlreadyExists = await dbContext.Users.AnyAsync(x => x.Username == requestData.Username);
 
         if (usernameAlreadyExists)
         {
@@ -59,15 +59,15 @@ public static partial class AccountEndpoints
 
         byte[] hashedPassword =  PlainTextPasswordToHash(requestData.Password);
 
-        Account newAccount = new Account() { Id = 0, HashedPassword = hashedPassword, Username = requestData.Username };
+        User newUser = new User() { HashedPassword = hashedPassword, Username = requestData.Username };
 
-        await dbContext.Accounts.AddAsync(newAccount);
+        await dbContext.Users.AddAsync(newUser);
         await dbContext.SaveChangesAsync();
 
-        return Results.Ok(new { Token = jwtTokenService.GenerateToken(newAccount), newAccount.Username });
+        return Results.Ok(new { Token = jwtTokenService.GenerateToken(newUser), newUser.Username });
     }
 
-    class AccountConnexionRequestData
+    class UserConnexionRequestData
     {
         public required string Username { get; init; }
         public required string Password { get; init; }

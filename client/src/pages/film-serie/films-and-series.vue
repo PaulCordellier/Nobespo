@@ -33,23 +33,24 @@ async function fetchTrending() {
 </script>
 
 <template>
-    <FilmsAndSeriesSearchBar />
-
-    <LoadingWrapper :loadedRef="apiResultsLeftSide" :errorMessage="loadingErrorMessage">
-        <div id="trending">
-            <FilmsAndSeriesList :medias="apiResultsLeftSide" />
-            <FilmsAndSeriesList :medias="apiResultsRightSide" />
-        </div>
-    </LoadingWrapper>
+    <div class="small-margin-container">
+        <FilmsAndSeriesSearchBar />
+        <LoadingWrapper :loadedRef="apiResultsLeftSide" :errorMessage="loadingErrorMessage">
+            <div id="trending">
+                <FilmsAndSeriesList :medias="apiResultsLeftSide" />
+                <FilmsAndSeriesList :medias="apiResultsRightSide" />
+            </div>
+        </LoadingWrapper>
+    </div>
 </template>
 
 
-<style lang="scss">
+<style lang="scss" scoped>
+
 #trending {
     display: flex;
     flex-direction: row;
     gap: 10px;
-    padding: 0 10%;
     padding-bottom: 40px;
 }
 
@@ -57,7 +58,6 @@ async function fetchTrending() {
     #trending {
         flex-direction: column;
         gap: 0;
-        padding: 0 10px;
         padding-bottom: 40px;
     }
 }

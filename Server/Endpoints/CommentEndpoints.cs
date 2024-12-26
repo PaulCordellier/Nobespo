@@ -63,7 +63,6 @@ public static class CommentEndpoints
 
         var commentToAdd = new FilmComment
         {
-            Id = 0,
             Text = commentText,
             UserId = userId,
             TmdbFilmId = tmdbId
@@ -92,7 +91,6 @@ public static class CommentEndpoints
 
         var commentToAdd = new SerieComment
         {
-            Id = 0,
             Text = commentText,
             UserId = userId,
             TmdbSerieId = tmdbId

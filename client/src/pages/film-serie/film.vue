@@ -32,7 +32,7 @@ async function fetchTrending() {
 
 <template>
     <LoadingWrapper :loaded-ref="media" :error-message="loadingErrorMessage">
-        <div v-if="media" class="basic-padding-container">
+        <div v-if="media" class="big-margin-container">
             <div id="media-or-watchlist-full-description">
                 <img :src="`https://image.tmdb.org/t/p/w185${media.poster_path}`" id="poster"/>
                 <div id="details">

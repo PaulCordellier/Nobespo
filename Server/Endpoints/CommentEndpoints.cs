@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Server.Models;
+using Server.Services;
 using System.Security.Claims;
 
 namespace Server.Endpoints;
@@ -49,11 +50,10 @@ public static class CommentEndpoints
     private static async Task<IResult> CommentFilm(ClaimsPrincipal claimsPrincipal,
                                                    [FromBody] string commentText,
                                                    ApiDbContext dbContext,
-                                                   int tmdbId)
+                                                   int tmdbId,
+                                                   JwtTokenService tokenService)
     {
-        Claim? userIdClaim = claimsPrincipal.Claims.FirstOrDefault(claim => claim.Type == "user_id");
-
-        if (!int.TryParse(userIdClaim?.Value, out int userId))
+        if (!tokenService.TryGetUserIdFromClaims(claimsPrincipal, out int userId))
         {
             return Results.BadRequest("Bad token");
         }
@@ -77,11 +77,10 @@ public static class CommentEndpoints
     private static async Task<IResult> CommentSerie(ClaimsPrincipal claimsPrincipal,
                                                    [FromBody] string commentText,
                                                    ApiDbContext dbContext,
-                                                   int tmdbId)
+                                                   int tmdbId,
+                                                   JwtTokenService tokenService)
     {
-        Claim? userIdClaim = claimsPrincipal.Claims.FirstOrDefault(claim => claim.Type == "user_id");
-
-        if (!int.TryParse(userIdClaim?.Value, out int userId))
+        if (!tokenService.TryGetUserIdFromClaims(claimsPrincipal, out int userId))
         {
             return Results.BadRequest("Bad token");
         }

@@ -1,0 +1,51 @@
+.tile {
+	position: relative;
+	border-radius: 20px;
+	display: flex;
+	gap: 15px;
+	padding: 15px;
+	-webkit-align-items: center;
+	align-items: center;
+	color: white;
+	-webkit-text-decoration: none;
+	text-decoration: none;
+	// overflow: hidden; // TODO c'est une bonne idée de supprimer ça ?
+	max-height: 250px;
+	width: 100%;
+
+	.tile-text {
+		flex-grow: 1;
+	}
+
+    button {
+        flex-grow: 0;
+    }
+}
+
+.tile-paragraph {
+	display: -webkit-box;
+	line-clamp: 6;
+	-webkit-line-clamp: 6;
+	-webkit-box-orient: vertical;
+	// overflow: hidden; // TODO c'est une bonne idée de supprimer ça ?
+	text-overflow: ellipsis;
+	max-height: 250px;
+	width: 100%;
+}
+
+.tile-paragraph-smaller {
+	@extend .tile-paragraph;
+	line-clamp: 3;
+	-webkit-line-clamp: 3;
+}
+
+.poster-tile {
+	border-radius: 10px;
+	width: 150px;
+	flex-grow: 0;
+}
+
+.poster-tile-smaller {
+	@extend .poster-tile;
+	width: 100px;
+}

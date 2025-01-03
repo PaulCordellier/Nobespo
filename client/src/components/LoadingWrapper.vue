@@ -28,6 +28,7 @@ defineProps<{
 
     position: relative;
     display: block;
+    height: 50px;
 
     .spinner {
         position: absolute;

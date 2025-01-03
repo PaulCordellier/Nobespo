@@ -32,4 +32,16 @@ public sealed class JwtTokenService(SecurityKey jwtSecretKey, IConfiguration con
         var token = tokenHandler.CreateToken(tokenDescriptor);
         return tokenHandler.WriteToken(token);
     }
+
+    /// <summary>
+    /// Attempts to extract a user's ID from a ClaimsPrincipal object. If the extraction
+    /// succeeds, the method assigns the parsed value to the userId parameter and returns
+    /// true. Otherwise, it returns false.
+    /// </summary>
+    public bool TryGetUserIdFromClaims(ClaimsPrincipal claimsPrincipal, out int userId)
+    {
+        Claim? userIdClaim = claimsPrincipal.Claims.FirstOrDefault(claim => claim.Type == "user_id");
+
+        return int.TryParse(userIdClaim?.Value, out userId);
+    }
 }

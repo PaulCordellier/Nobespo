@@ -3,24 +3,17 @@ import { ref, useTemplateRef } from "vue"
 import { useRouter } from "vue-router"
 import onLongTextAreaInput from "@/misc/onLongTextAreaInput"
 import LoadingWrapper from "@/components/LoadingWrapper.vue"
-import { MdRipple } from "@material/web/ripple/ripple"
 import { useCurrentUserStore } from "@/stores/currentUser"
 import FieldVerifier from "@/components/FieldVerifier.vue"
 import { type FieldVerifierInfo } from "@/components/FieldVerifier.vue"
 import ButtonWithLoading from "@/components/ButtonWithLoading.vue"
 import { ResponseState } from "@/components/ButtonWithLoading.vue"
+import { type Watchlist } from "@/misc/watchlist-types"
+import ListOfFilmsAndSeries from "@/components/ListOfFilmsAndSeries.vue"
 
 const currentUserStore = useCurrentUserStore()
-const showButtonToRemoveSearchText = ref<boolean>(false)
 const searchBar = useTemplateRef('watchlist-search-bar')
 const router = useRouter()
-
-type Watchlist = {
-    title: string
-    description: string
-    filmsIds: number[]
-    seriesIds: number[]
-}
 
 const watchlist = ref<Watchlist>({
     title: "",
@@ -29,8 +22,10 @@ const watchlist = ref<Watchlist>({
     seriesIds: []
 })
 
+const searchFieldHasText = ref(false)
+const showSearchResults = ref(false)
 const responseState = ref<ResponseState>(ResponseState.NoRequest)
-const searchResults = ref<any[] | undefined>([])
+const searchResults = ref<any[] | undefined>([])    
 const loadingErrorMessage = ref<string>()
 const addedMedias = ref<any[]>([])
 const filedVerifiersWithErrorIcon = ref<boolean>(false)
@@ -44,7 +39,7 @@ async function addWatchlist() {
     }
 
     responseState.value = ResponseState.Loading
-    
+
     const response = await fetch('/api/watchlist/add', {
             method: 'POST',
             headers: {
@@ -65,10 +60,11 @@ async function addWatchlist() {
     }
 }
 
-async function fetchFilmsAndSeries(searchQuery : string) {
+async function fetchSearchResults(searchQuery : string) {
 
     searchResults.value = undefined
     loadingErrorMessage.value = undefined
+    showSearchResults.value = true
 
     if (searchQuery == "") {
         searchResults.value = []
@@ -94,8 +90,8 @@ const fieldVerifierInfos : FieldVerifierInfo[] = [
         description: "Der Titel ist obligatorisch."
     },
     {
-        isValid: () => watchlist.value.filmsIds.length > 0 || watchlist.value.seriesIds.length > 0,
-        description: "Es gibt keine Serien oder Filme auf Ihrer Watchlist."
+        isValid: () => watchlist.value.filmsIds.length + watchlist.value.seriesIds.length >= 2,
+        description: "Eine Watchlist muss mindestens zwei Filme oder Serien enthalten."
     }
 ]
 
@@ -148,9 +144,11 @@ function onDescriptionAreaInput(event: Event) {
 
 function onSearchBarInput(event: Event) {
     let searchBar = event.target as HTMLInputElement
-    showButtonToRemoveSearchText.value = searchBar.value != ''
+    searchFieldHasText.value = searchBar.value != ''
+
     if (searchBar.value == '') {
-        searchResults.value = []
+        searchResults.value = undefined
+        showSearchResults.value = false
     }
 }
 
@@ -179,23 +177,11 @@ function onButtonToRemoveSearchTextClick() {
         ></textarea>
 
         <p v-if="addedMedias.length > 0" class="text-field-label">Filme und Serien auf der Watchlist:</p>
-
-        <div v-for="media, index in addedMedias" class="film-or-serie-container">
-            <md-ripple></md-ripple>
-            <RouterLink
-                v-if="media.media_type == 'movie' || media.media_type == 'tv'"
-                :to="{ name: media.media_type == 'movie' ? 'film' : 'serie', params: { id: media.id }}"
-                class="film-or-serie"
-            >
-                <img v-if="media.poster_path" :src="`https://image.tmdb.org/t/p/w92${media.poster_path}`" />
-                <div class="media-text">
-                    <h2 v-if="media.media_type == 'movie'">{{ media.title }}</h2>
-                    <h2 v-else>{{ media.name }}</h2>
-                    <p>{{ media.overview }}</p>
-                </div>
-                <button class="primary-button" @click="removeMedia(index, $event)" style="z-index: 100;">Löschen</button>
-            </RouterLink>
-        </div>
+        <ListOfFilmsAndSeries
+            :medias="addedMedias"
+            :button-info="{ buttonText: 'Löschen', buttonEvent: removeMedia }"
+            :should-be-small="true"
+        />
 
         <div id="search-bar-wrapper">
             <input
@@ -203,10 +189,10 @@ function onButtonToRemoveSearchTextClick() {
                 ref="watchlist-search-bar"
                 placeholder="Films oder Series suchen"
                 @input="onSearchBarInput"
-                @keyup.enter="fetchFilmsAndSeries(($event.target as HTMLInputElement).value)"
+                @keyup.enter="fetchSearchResults(($event.target as HTMLInputElement).value)"
             >
             <img
-                v-if="showButtonToRemoveSearchText"
+                v-if="searchFieldHasText"
                 src="@/assets/images/icons/close.svg"
                 alt="Remove search text"
                 id="remove-search-text-icon"
@@ -214,25 +200,14 @@ function onButtonToRemoveSearchTextClick() {
             >
         </div>
 
-        <LoadingWrapper :loaded-ref="searchResults" :error-message="loadingErrorMessage">
+        <LoadingWrapper v-if="showSearchResults" :loaded-ref="searchResults" :error-message="loadingErrorMessage">
             <p v-if="searchResults!.length > 0" class="text-field-label">Suchergebnisse:</p>
-            <div v-for="media, index in searchResults" class="film-or-serie-container">
-                <!-- TODO Gérer tabindex -->
-                <md-ripple></md-ripple>
-                <RouterLink
-                    v-if="media.media_type == 'movie' || media.media_type == 'tv'"
-                    :to="{ name: media.media_type == 'movie' ? 'film' : 'serie', params: { id: media.id }}"
-                    class="film-or-serie"
-                >
-                    <img v-if="media.poster_path" :src="`https://image.tmdb.org/t/p/w92${media.poster_path}`" />
-                    <div class="media-text">
-                        <h2 v-if="media.media_type == 'movie'">{{ media.title }}</h2>
-                        <h2 v-else>{{ media.name }}</h2>
-                        <p>{{ media.overview }}</p>
-                    </div>
-                    <button class="primary-button" @click="addMedia(index, $event)" style="z-index: 100;">Hinzufügen</button>
-                </RouterLink>
-            </div>
+            <p v-else-if="searchResults">Kein Ergebnis</p>
+            <ListOfFilmsAndSeries
+                :medias="searchResults"
+                :button-info="{ buttonText: 'Hinzufügen', buttonEvent: addMedia }"
+                :should-be-small="true"
+            />
         </LoadingWrapper>
 
         <div v-for="fieldVerifierInfo in fieldVerifierInfos">
@@ -249,47 +224,6 @@ function onButtonToRemoveSearchTextClick() {
 </template>
 
 <style lang="scss">
-// todo fix this
-
-.film-or-serie-container {
-	position: relative;
-	border-radius: 20px;
-}
-
-.film-or-serie {
-	display: flex;
-	gap: 15px;
-	padding: 15px;
-	-webkit-align-items: center;
-	align-items: center;
-	color: white;
-	-webkit-text-decoration: none;
-	text-decoration: none;
-	overflow: hidden;
-	max-height: 250px;
-	width: 100%;
-
-    .media-text {
-        flex-grow: 6;
-    }
-
-	p {
-		display: -webkit-box;
-		line-clamp: 2;
-		-webkit-line-clamp: 2;
-		-webkit-box-orient: vertical;
-		overflow: hidden;
-		text-overflow: ellipsis;
-		max-height: 250px;
-		width: 100%;
-	}
-
-	img {
-		border-radius: 10px;
-		width: 100px;
-	}
-}
-
 #add-button, l-dot-spinner {
     display: block;
     margin: 20px auto 0 auto;

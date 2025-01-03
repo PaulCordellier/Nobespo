@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Server.Models;
 
 [Table("watchlist")]
-public class Watchlist
+public sealed class Watchlist
 {
     [Key]
     [Column("watchlist_id")]
@@ -21,6 +21,9 @@ public class Watchlist
     [Column("publish_date")]
     public DateOnly PublishDate { get; set; }
 
+    [Column("poster_paths")]
+    public ICollection<string> PosterPaths { get; set; } = [];
+
     [Column("watchlist_films_ids")]
     public required ICollection<int> FilmsIds { get; set; }
 
@@ -30,5 +33,5 @@ public class Watchlist
     [Column("user_id")]
     public int UserId { get; set; }
 
-    public virtual User User { get; set; } = null!;
+    public User User { get; set; } = null!;
 }

@@ -50,15 +50,21 @@ async function fetchTrending() {
 #trending {
     display: flex;
     flex-direction: row;
-    gap: 10px;
     padding-bottom: 40px;
+
+    div {
+        width: 50%;
+    }
 }
 
 @media (max-width: 900px) {
     #trending {
         flex-direction: column;
-        gap: 0;
         padding-bottom: 40px;
+
+        div {
+            width: 100%;
+        }
     }
 }
 </style>

@@ -13,7 +13,7 @@ CREATE TABLE film_comment (
     publish_date date NOT NULL DEFAULT (CURRENT_DATE),
     tmdb_film_id integer NOT NULL,
     user_id integer NOT NULL,
-    CONSTRAINT pk_film_comment PRIMARY KEY (film_comment_id),
+    CONSTRAINT pk_film_comment PRIMARY KEY (film_comment_id), 
     CONSTRAINT fk_user_film_comment FOREIGN KEY (user_id) REFERENCES user_data (user_id) ON DELETE CASCADE
 );
 
@@ -32,6 +32,7 @@ CREATE TABLE watchlist (
     watchlist_title character varying(200) NOT NULL,
     watchlist_description character varying(20000) NOT NULL,
     publish_date date NOT NULL DEFAULT (CURRENT_DATE),
+    poster_paths character varying(200)[] NOT NULL,
     watchlist_films_ids integer[] NOT NULL,
     watchlist_series_ids integer[] NOT NULL,
     user_id integer NOT NULL,

@@ -4,7 +4,6 @@ import { MdOutlinedButton } from '@material/web/button/outlined-button'
 import { onMounted, ref } from "vue"
 import { useRoute } from "vue-router"
 
-import tmdbDateFromatToGermanDate from "@/misc/change-date-format"
 import StarsRatingHover from '@/components/rating/StarsRatingHover.vue'
 import CommentSection from "@/components/CommentSection.vue"
 import LoadingWrapper from "@/components/LoadingWrapper.vue"
@@ -39,7 +38,7 @@ onMounted(async () => {
                         <span class="separator" v-if="media.runtime != 0"> • </span>
                         <span id="length-info" v-if="media.runtime != 0">{{ media.runtime }} mins</span>
                         <span class="separator"> • </span>
-                        <span id="release-date">{{ tmdbDateFromatToGermanDate(media.release_date) }}</span>
+                        <span id="release-date">{{ new Date(media.first_air_date).toLocaleDateString('de-DE') }}</span>
                     </p>
 
                     <p id="description">{{ media.overview }}</p>

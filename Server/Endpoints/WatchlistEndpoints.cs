@@ -15,7 +15,7 @@ public static class WatchlistEndpoints
 
         route.MapGet("getbyid/{watchlistId}", GetById);
         route.MapGet("recent", GetRecentWatchlists);
-        route.MapGet("search/{searchText}", SearchWatchlists);
+        route.MapGet("search/{encodedSearchText}", SearchWatchlists);
         route.MapPost("add", AddWatchlist);
     }
 
@@ -45,8 +45,6 @@ public static class WatchlistEndpoints
     private static async Task<IResult> SearchWatchlists(string encodedSearchText, ApiDbContext dbContext)
     {
         string decodedSearchText = Uri.UnescapeDataString(encodedSearchText);
-
-        Console.WriteLine(decodedSearchText);
 
         List<Watchlist> foundWatchlists = await dbContext.SearchWatchlists(decodedSearchText).ToListAsync();
 

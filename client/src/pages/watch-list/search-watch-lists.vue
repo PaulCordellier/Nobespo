@@ -23,21 +23,16 @@ async function fetchApi() {
     loadingErrorMessage.value = undefined
     noSearchResultFound.value = false
 
-    console.log(`/api/watchlist/search/${route.params.query}`);
-    
-
     const response = await fetch(`/api/watchlist/search/${route.params.query}`, { method: "GET" })
 
     if (response.ok) {
         const apiResponse = await response.json()
         apiResults.value = apiResponse as WatchlistInfo[]
-        console.log(apiResults.value)
     } else if (response.status == 404) {
         noSearchResultFound.value = true
         apiResults.value = []
     } else {
         loadingErrorMessage.value = "Fehler: Code " + response.status
-        console.log("no")
     }
 }
 </script>

@@ -8,6 +8,7 @@ public sealed partial class ApiDbContext : DbContext
     public DbSet<FilmComment> FilmsComments { get; set; } = null!;
     public DbSet<SerieComment> SeriesComments { get; set; } = null!;
     public DbSet<Watchlist> Watchlists { get; set; } = null!;
+    public DbSet<WatchlistComment> WatchlistComments { get; set; } = null!;
 
     public ApiDbContext() : base()
     {
@@ -53,6 +54,15 @@ public sealed partial class ApiDbContext : DbContext
             entity.HasIndex(x => x.TmdbSerieId);
         });
 
-        modelBuilder.Entity<Watchlist>().Property(x => x.PublishDate).HasDefaultValueSql("CURRENT_DATE");
+        modelBuilder.Entity<Watchlist>(entity =>
+        {
+            entity.Property(x => x.PublishDate).HasDefaultValueSql("CURRENT_DATE");
+            entity.HasMany(x => x.Comments)
+                  .WithOne(x => x.Watchlist)
+                  .HasForeignKey(x => x.WatchlistId)
+                  .HasConstraintName("fk_watchlist_comment");
+        });
+
+        modelBuilder.Entity<WatchlistComment>().Property(x => x.PublishDate).HasDefaultValueSql("CURRENT_DATE");
     }
 }

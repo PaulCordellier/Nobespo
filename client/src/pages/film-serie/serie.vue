@@ -15,12 +15,10 @@ const media = ref()
 const seasons = ref<any[]>([])
 const loadingErrorMessage = ref<string | undefined>()
 
-onMounted(fetchTrending)
-
-async function fetchTrending() {
+onMounted(async () =>  {
 
     loadingErrorMessage.value = undefined
-    
+
     const response = await fetch(`/api/tmdb/serie/${route.params.id}`, { method: "GET" })
 
     if (response.ok) {
@@ -30,13 +28,13 @@ async function fetchTrending() {
         // We want to show the number of seasons, but sometimes in the database "extras" are counted as a season.
         // This code removes thoose extras.
         seasons.value = seasons.value.filter(item => {
-            let seariesName : string = item.name.toLowerCase()
-            return seariesName != "extras" && seariesName != "extra"
+            let seriesName: string = item.name.toLowerCase()
+            return seriesName != "extras" && seriesName != "extra"
         })
     } else {
         loadingErrorMessage.value = "Fehler: Code " + response.status
     }
-}
+})
 </script>
 
 <template>
@@ -63,8 +61,8 @@ async function fetchTrending() {
                 </div>
             </div>
             <CommentSection
-                :urlToGetComments="`/api/comment/get-comments/serie/${media.id}`"
-                :urlToPublishComments="`/api/comment/publish-comment/serie/${media.id}`" />
+                :urlToGetComments="`/api/comment/get/serie/${media.id}`"
+                :urlToPublishComments="`/api/comment/publish/serie/${media.id}`" />
         </div>
     </LoadingWrapper>
 </template>

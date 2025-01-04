@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Server.Models;
 using Server.Services;
@@ -13,8 +14,21 @@ public static class WatchlistEndpoints
     {
         var route = app.MapGroup("watchlist").WithTags("Watchlists");
 
-        route.MapPost("add", AddWatchlist);
+        route.MapGet("getbyid/{watchlistId}", GetById);
         route.MapGet("recent", GetRecentWatchlists);
+        route.MapPost("add", AddWatchlist);
+    }
+
+    private static async Task<IResult> GetById(int watchlistId, ApiDbContext dbContext)
+    {
+        Watchlist? foundWatchlist = await dbContext.Watchlists.FirstOrDefaultAsync(x => x.Id == watchlistId);
+
+        if (foundWatchlist is null)
+        {
+            return Results.NotFound();
+        }
+
+        return Results.Ok(foundWatchlist);
     }
 
     private static async Task<IResult> GetRecentWatchlists(ApiDbContext dbContext)

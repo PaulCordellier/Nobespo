@@ -8,7 +8,7 @@ defineProps<{
 </script>
 
 <template>
-<RouterLink :to="`/watch-lists/1${watchlist.id}`" class="watchlist-tile" v-for="watchlist in watchlists">
+<RouterLink :to="`/watch-lists/${watchlist.id}`" class="watchlist-tile" v-for="watchlist in watchlists">
     <md-ripple></md-ripple>
     <div>
         <div v-for="posterPath in watchlist.posterPaths" class="poster-wrapper">
@@ -31,7 +31,7 @@ defineProps<{
 
     $poster-basic-width: 120px;
     $poster-basic-height: 170px;
-    $poster-offset: 40px;
+    $poster-offset: 60px;
 
     .poster-wrapper {
         display: inline-block;

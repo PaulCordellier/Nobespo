@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref, useTemplateRef } from 'vue'
+import { onMounted, ref, useTemplateRef } from "vue"
 import { useRouter } from "vue-router"
 import { useCurrentUserStore } from "@/stores/currentUser"
 import onLongTextAreaInput from "@/misc/onLongTextAreaInput"
@@ -29,7 +29,7 @@ onMounted(getComments)
 
 async function getComments() {
 
-    const response = await fetch(urlToGetComments, {method: 'GET'})
+    const response = await fetch(urlToGetComments, { method: 'GET' })
 
     if (response.ok) {
         comments.value = await response.json() as Comment[]
@@ -63,6 +63,7 @@ async function publishComment() {
         await getComments()
         responseState.value = ResponseState.NoRequest
         commentTextArea.value!.value = ''
+        showPostButton.value = false
     } else if (response.status == 401 || (response.body && await response.json() == 'Bad token')) {
         currentUserStore.disconnectUser()
         router.push({ name: 'login' })

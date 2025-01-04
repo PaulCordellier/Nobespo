@@ -34,4 +34,6 @@ public sealed class Watchlist
     public int UserId { get; set; }
 
     public User User { get; set; } = null!;
+
+    public ICollection<WatchlistComment> Comments { get; set; } = [];
 }

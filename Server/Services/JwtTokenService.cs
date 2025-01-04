@@ -23,7 +23,7 @@ public sealed class JwtTokenService(SecurityKey jwtSecretKey, IConfiguration con
                 new Claim("username", user.Username),
                 new Claim("role", "user")
             ]),
-            Expires = DateTime.UtcNow.AddHours(1),
+            Expires = DateTime.UtcNow.AddYears(1),
             SigningCredentials = new SigningCredentials(_jwtSecretKey, SecurityAlgorithms.HmacSha256Signature),
             Issuer = _configuration["Jwt:Issuer"],
             Audience = _configuration["Jwt:Audience"]

@@ -14,12 +14,10 @@ const route = useRoute()
 const media = ref()
 const loadingErrorMessage = ref<string | undefined>()
 
-onMounted(fetchTrending)
-
-async function fetchTrending() {
+onMounted(async () => {
 
     loadingErrorMessage.value = undefined
-    
+
     const response = await fetch(`/api/tmdb/movie/${route.params.id}`, { method: "GET" })
 
     if (response.ok) {
@@ -27,7 +25,7 @@ async function fetchTrending() {
     } else {
         loadingErrorMessage.value = "Fehler: Code " + response.status
     }
-}
+})
 </script>
 
 <template>
@@ -53,8 +51,8 @@ async function fetchTrending() {
                 </div>
             </div>
             <CommentSection
-                :urlToGetComments="`/api/comment/get-comments/film/${media.id}`"
-                :urlToPublishComments="`/api/comment/publish-comment/film/${media.id}`" />
+                :urlToGetComments="`/api/comment/get/film/${media.id}`"
+                :urlToPublishComments="`/api/comment/publish/film/${media.id}`" />
         </div>
     </LoadingWrapper>
 </template>

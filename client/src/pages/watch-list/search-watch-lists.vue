@@ -1,11 +1,54 @@
 <script setup lang="ts">
-import FilmsAndSeriesSearchBar from "@/components/FilmAndSeriesSearchBar.vue"
+import { ref, onMounted, watch } from "vue"
+import { useRoute } from "vue-router"
+import SearchBar from "@/components/SearchBar.vue"
 import ListOfWatchlists from "@/components/ListOfWatchlists.vue"
+import type { WatchlistInfo } from "@/misc/watchlist-types"
+import LoadingWrapper from "@/components/LoadingWrapper.vue"
+
+const route = useRoute()
+const apiResults = ref<WatchlistInfo[]>()
+const loadingErrorMessage = ref<string | undefined>()
+const noSearchResultFound = ref(false)
+
+onMounted(fetchApi)
+
+watch(
+  () => route.params.query,
+  fetchApi
+)
+
+async function fetchApi() {
+    apiResults.value = undefined
+    loadingErrorMessage.value = undefined
+    noSearchResultFound.value = false
+
+    console.log(`/api/watchlist/search/${route.params.query}`);
+    
+
+    const response = await fetch(`/api/watchlist/search/${route.params.query}`, { method: "GET" })
+
+    if (response.ok) {
+        const apiResponse = await response.json()
+        apiResults.value = apiResponse as WatchlistInfo[]
+        console.log(apiResults.value)
+    } else if (response.status == 404) {
+        noSearchResultFound.value = true
+        apiResults.value = []
+    } else {
+        loadingErrorMessage.value = "Fehler: Code " + response.status
+        console.log("no")
+    }
+}
 </script>
 
 <template>
     <div class="big-margin-container">
-        <FilmsAndSeriesSearchBar />
-        <ListOfWatchlists />
+        <SearchBar search-route-name="search-watch-lists" />
+        
+        <LoadingWrapper :loaded-ref="apiResults" :error-message="loadingErrorMessage">
+            <ListOfWatchlists :watchlists="apiResults"/>
+            <h1 v-if="noSearchResultFound" class="error-message">Nothing was found !</h1>
+        </LoadingWrapper>
     </div>
 </template>

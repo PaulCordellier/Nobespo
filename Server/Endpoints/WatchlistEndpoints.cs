@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Server.Models;
 using Server.Services;
@@ -16,6 +15,7 @@ public static class WatchlistEndpoints
 
         route.MapGet("getbyid/{watchlistId}", GetById);
         route.MapGet("recent", GetRecentWatchlists);
+        route.MapGet("search/{searchText}", SearchWatchlists);
         route.MapPost("add", AddWatchlist);
     }
 
@@ -40,6 +40,22 @@ public static class WatchlistEndpoints
                                               .ToArrayAsync();
 
         return Results.Ok(recentWatchlists);
+    }
+
+    private static async Task<IResult> SearchWatchlists(string encodedSearchText, ApiDbContext dbContext)
+    {
+        string decodedSearchText = Uri.UnescapeDataString(encodedSearchText);
+
+        Console.WriteLine(decodedSearchText);
+
+        List<Watchlist> foundWatchlists = await dbContext.SearchWatchlists(decodedSearchText).ToListAsync();
+
+        if (foundWatchlists.Count == 0)
+        {
+            return Results.NotFound();
+        }
+
+        return Results.Ok(foundWatchlists);
     }
 
     private static async Task<IResult> AddWatchlist(ClaimsPrincipal claimsPrincipal,
@@ -72,7 +88,7 @@ public static class WatchlistEndpoints
         int index = 0;
         ICollection<int> mediaIdCollection = watchlist.FilmsIds;
 
-        while (watchlist.PosterPaths.Count <= 4)
+        while (watchlist.PosterPaths.Count < 4)
         {
             if (mediaIdCollection.Count <= index && mediaIdCollection == watchlist.FilmsIds)
             {

@@ -2,7 +2,9 @@
 import { useTemplateRef } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 
-// TODO rename and add properties to this component so it also searches for watch lists
+const { searchRouteName } = defineProps<{
+    searchRouteName: string
+}>()
 
 const router = useRouter()
 const route = useRoute()
@@ -15,10 +17,9 @@ function onEnterPressed() {
         return
     }
     
-    let query = writtenText
-    query = encodeURI(query)
-    
-    router.push({ name: 'search-films-series', params: { query }})
+    let query = encodeURI(writtenText)
+
+    router.push({ name: searchRouteName, params: { query }})
 }
 </script>
 

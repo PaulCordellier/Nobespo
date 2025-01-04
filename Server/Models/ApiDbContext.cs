@@ -48,7 +48,7 @@ public sealed partial class ApiDbContext : DbContext
             entity.HasIndex(x => x.TmdbFilmId);
         });
 
-        modelBuilder.Entity<SerieComment>(entity => 
+        modelBuilder.Entity<SerieComment>(entity =>
         {
             entity.Property(x => x.PublishDate).HasDefaultValueSql("CURRENT_DATE");
             entity.HasIndex(x => x.TmdbSerieId);
@@ -64,5 +64,10 @@ public sealed partial class ApiDbContext : DbContext
         });
 
         modelBuilder.Entity<WatchlistComment>().Property(x => x.PublishDate).HasDefaultValueSql("CURRENT_DATE");
+
+        modelBuilder.HasDbFunction(typeof(ApiDbContext).GetMethod(nameof(SearchWatchlists), [typeof(string)])!)
+                    .HasName("search_watchlists");
     }
+
+    public IQueryable<Watchlist> SearchWatchlists(string encodedSearchText) => FromExpression(() => SearchWatchlists(encodedSearchText));
 }

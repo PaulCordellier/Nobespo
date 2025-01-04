@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted } from "vue"
-import FilmsAndSeriesSearchBar from "@/components/FilmAndSeriesSearchBar.vue"
+import SearchBar from "@/components/SearchBar.vue"
 import ListOfWatchlists from "@/components/ListOfWatchlists.vue"
 import type { WatchlistInfo } from "@/misc/watchlist-types"
 import LoadingWrapper from "@/components/LoadingWrapper.vue"
@@ -29,7 +29,7 @@ async function fetchRecentWatchlists() {
 
 <template>
     <div class="big-margin-container">
-        <FilmsAndSeriesSearchBar />
+        <SearchBar search-route-name="search-watch-lists"/>
         <LoadingWrapper :loaded-ref="apiResults" :error-message="loadingErrorMessage">
             <ListOfWatchlists :watchlists="apiResults" />
         </LoadingWrapper>

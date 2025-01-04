@@ -74,3 +74,17 @@ CREATE VIEW all_comments AS
 
 -- Connect view to ef core :
 -- https://learn.microsoft.com/en-us/ef/core/modeling/keyless-entity-types?tabs=data-annotations
+
+CREATE EXTENSION IF NOT EXISTS pg_trgm;
+
+CREATE OR REPLACE FUNCTION search_watchlists(search_text varchar(200))
+RETURNS SETOF watchlist AS $$
+    SELECT watchlist_id, watchlist_title, watchlist_description, publish_date, poster_paths, watchlist_films_ids, watchlist_series_ids, user_id
+    FROM (
+        SELECT *, similarity(watchlist_title, search_text) AS similarity
+        FROM watchlist
+    )
+	WHERE similarity > 0.1
+    ORDER BY similarity DESC
+    LIMIT 10;
+$$ LANGUAGE sql;

@@ -153,9 +153,11 @@ function onSearchBarInput(event: Event) {
 }
 
 function onButtonToRemoveSearchTextClick() {
-    searchResults.value = []
+    searchResults.value = undefined
     searchBar.value!.value = ''
     loadingErrorMessage.value = undefined
+    searchFieldHasText.value = false
+    showSearchResults.value = false
 }
 </script>
 
@@ -187,7 +189,7 @@ function onButtonToRemoveSearchTextClick() {
             <input
                 id="search-bar"
                 ref="watchlist-search-bar"
-                placeholder="Films oder Series suchen"
+                placeholder="Nach Filmen oder Serien suchen, um sie auf die Watchlist zu setzen"
                 @input="onSearchBarInput"
                 @keyup.enter="fetchSearchResults(($event.target as HTMLInputElement).value)"
             >

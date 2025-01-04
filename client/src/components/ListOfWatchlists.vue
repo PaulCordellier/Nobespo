@@ -16,7 +16,7 @@ defineProps<{
         </div>
     </div>
     <div class="tile-text">
-        <h2>{{ watchlist.title }}</h2>
+        <h2 class="tile-title">{{ watchlist.title }}</h2>
         <p class="tile-paragraph">{{ watchlist.description }}</p>
     </div>
 </RouterLink>

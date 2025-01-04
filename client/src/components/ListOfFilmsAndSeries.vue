@@ -27,8 +27,8 @@ defineProps<{
 				:class="shouldBeSmall ? 'poster-tile-smaller' : 'poster-tile'"
 			/>
 			<div class="tile-text">
-				<h2 v-if="media.media_type == 'movie'">{{ media.title }}</h2>
-				<h2 v-else>{{ media.name }}</h2>
+				<h2 class="tile-title" v-if="media.media_type == 'movie'">{{ media.title }}</h2>
+				<h2 class="tile-title" v-else>{{ media.name }}</h2>
 				<p :class="shouldBeSmall ? 'tile-paragraph-smaller' : 'tile-paragraph'">{{ media.overview }}</p>
 			</div>
 			<button

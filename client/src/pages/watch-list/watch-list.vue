@@ -79,7 +79,7 @@ onMounted(async () => {
 
                         <span class="separator"> • </span>
 
-                        <span id="release-date">gepostet am {{ watchlist!.publishDate.toLocaleDateString('de-DE') }}</span>
+                        <span id="release-date">gepostet am {{ new Date(watchlist!.publishDate).toLocaleDateString('de-DE') }}</span>
                     </p>
     
                     <p id="description">{{ watchlist!.description }}</p>

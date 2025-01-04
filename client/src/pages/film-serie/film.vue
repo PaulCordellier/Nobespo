@@ -37,8 +37,8 @@ onMounted(async () => {
                         <span id="title">{{ media.title }}</span>
                         <span class="separator" v-if="media.runtime != 0"> • </span>
                         <span id="length-info" v-if="media.runtime != 0">{{ media.runtime }} mins</span>
-                        <span class="separator"> • </span>
-                        <span id="release-date">{{ new Date(media.first_air_date).toLocaleDateString('de-DE') }}</span>
+                        <span v-if="media.release_date" class="separator"> • </span>
+                        <span v-if="media.release_date" id="release-date">Erscheinungsdatum: {{ new Date(media.release_date).toLocaleDateString('de-DE') }}</span>
                     </p>
 
                     <p id="description">{{ media.overview }}</p>

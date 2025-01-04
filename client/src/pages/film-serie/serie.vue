@@ -47,8 +47,8 @@ onMounted(async () =>  {
                         <span class="separator"> • </span>
                         <span id="length-info" v-if="seasons.length <= 1"> {{ seasons.length }} Staffel</span>
                         <span id="length-info" v-else> {{ seasons.length }} Staffeln</span>
-                        <span class="separator"> • </span>
-                        <span id="release-date">Letzte Sendung: {{ new Date(media.first_air_date).toLocaleDateString('de-DE') }}</span>
+                        <span v-if="media.first_air_date" class="separator"> • </span>
+                        <span v-if="media.first_air_date" id="release-date">Letzte Sendung: {{ new Date(media.first_air_date).toLocaleDateString('de-DE') }}</span>
                     </p>
 
                     <p id="description">{{ media.overview }}</p>

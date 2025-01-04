@@ -7,7 +7,7 @@ export type Watchlist = {
 
 export type WatchlistInfo = Watchlist & {
     username: string,
-    publishDate: Date,
+    publishDate: string,
     id: number,
     posterPaths: string[]
 }

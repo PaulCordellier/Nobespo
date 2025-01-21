@@ -67,7 +67,11 @@ public sealed partial class ApiDbContext : DbContext
 
         modelBuilder.HasDbFunction(typeof(ApiDbContext).GetMethod(nameof(SearchWatchlists), [typeof(string)])!)
                     .HasName("search_watchlists");
+
+        modelBuilder.HasDbFunction(typeof(ApiDbContext).GetMethod(nameof(SearchUsernames), [typeof(string)])!)
+                    .HasName("search_username");
     }
 
-    public IQueryable<Watchlist> SearchWatchlists(string encodedSearchText) => FromExpression(() => SearchWatchlists(encodedSearchText));
+    public IQueryable<Watchlist> SearchWatchlists(string searchText) => FromExpression(() => SearchWatchlists(searchText));
+    public IQueryable<User> SearchUsernames(string searchText) => FromExpression(() => SearchUsernames(searchText));
 }

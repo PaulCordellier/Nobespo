@@ -9,7 +9,6 @@ import LoadingWrapper from "@/components/LoadingWrapper.vue"
 const route = useRoute()
 const apiResults = ref<WatchlistInfo[]>()
 const loadingErrorMessage = ref<string | undefined>()
-const noSearchResultFound = ref(false)
 
 onMounted(fetchApi)
 
@@ -21,16 +20,12 @@ watch(
 async function fetchApi() {
     apiResults.value = undefined
     loadingErrorMessage.value = undefined
-    noSearchResultFound.value = false
 
     const response = await fetch(`/api/watchlist/search/${route.params.query}`, { method: "GET" })
 
     if (response.ok) {
         const apiResponse = await response.json()
         apiResults.value = apiResponse as WatchlistInfo[]
-    } else if (response.status == 404) {
-        noSearchResultFound.value = true
-        apiResults.value = []
     } else {
         loadingErrorMessage.value = "Fehler: Code " + response.status
     }
@@ -38,12 +33,16 @@ async function fetchApi() {
 </script>
 
 <template>
-    <div class="big-margin-container">
-        <SearchBar search-route-name="search-watch-lists" />
+    <div class="basic-margin-container">
+        <SearchBar
+            placeholder="Watchlists suchen"
+            search-route-name="search-watch-lists"
+            :get-search-text-from-query="true"
+        />
         
         <LoadingWrapper :loaded-ref="apiResults" :error-message="loadingErrorMessage">
             <ListOfWatchlists :watchlists="apiResults"/>
-            <h1 v-if="noSearchResultFound" class="error-message">Nothing was found !</h1>
+            <h1 v-if="apiResults?.length === 0" class="error-message">Nothing was found !</h1>
         </LoadingWrapper>
     </div>
 </template>

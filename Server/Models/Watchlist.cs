@@ -25,15 +25,15 @@ public sealed class Watchlist
     public ICollection<string> PosterPaths { get; set; } = [];
 
     [Column("watchlist_films_ids")]
-    public required ICollection<int> FilmsIds { get; set; }
+    public required ICollection<int> FilmsIds { get; init; }
 
     [Column("watchlist_series_ids")]
-    public required ICollection<int> SeriesIds { get; set; }
+    public required ICollection<int> SeriesIds { get; init; }
 
     [Column("user_id")]
     public int UserId { get; set; }
 
     public User User { get; set; } = null!;
 
-    public ICollection<WatchlistComment> Comments { get; set; } = [];
+    public ICollection<WatchlistComment> Comments { get; } = [];
 }

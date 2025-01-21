@@ -46,12 +46,7 @@ public static class WatchlistEndpoints
     {
         string decodedSearchText = Uri.UnescapeDataString(encodedSearchText);
 
-        List<Watchlist> foundWatchlists = await dbContext.SearchWatchlists(decodedSearchText).ToListAsync();
-
-        if (foundWatchlists.Count == 0)
-        {
-            return Results.NotFound();
-        }
+        Watchlist[] foundWatchlists = await dbContext.SearchWatchlists(decodedSearchText).ToArrayAsync();
 
         return Results.Ok(foundWatchlists);
     }
@@ -72,16 +67,13 @@ public static class WatchlistEndpoints
             return Results.BadRequest("A watchlist needs at least two films or series.");
         }
 
-        // Sanitizing string here:
-        watchlist.Description = watchlist.Description.Trim().Replace("'", "''");
-
         watchlist.UserId = userId;
 
         // Here, we store the poster paths of some films and series of the watchlist so we can show some 
         // posters to the frontend. This is useful on pages where there is a lot of whatchlists, the user
         // can have a quick preview of the films in the whatchlist by just looking at the posters.
             
-        watchlist.PosterPaths = [];
+        watchlist.PosterPaths.Clear();
 
         int index = 0;
         ICollection<int> mediaIdCollection = watchlist.FilmsIds;

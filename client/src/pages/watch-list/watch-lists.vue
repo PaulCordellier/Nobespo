@@ -18,9 +18,7 @@ async function fetchRecentWatchlists() {
     const response = await fetch("/api/watchlist/recent", { method: "GET" })
 
     if (response.ok) {
-        const apiResponse = await response.json()
-
-        apiResults.value = apiResponse as WatchlistInfo[]
+        apiResults.value = await response.json() as WatchlistInfo[]
     } else {
         loadingErrorMessage.value = "Fehler: Code " + response.status
     }
@@ -28,8 +26,8 @@ async function fetchRecentWatchlists() {
 </script>
 
 <template>
-    <div class="big-margin-container">
-        <SearchBar search-route-name="search-watch-lists"/>
+    <div class="basic-margin-container">
+        <SearchBar placeholder="Watchlists suchen" search-route-name="search-watch-lists"/>
         <LoadingWrapper :loaded-ref="apiResults" :error-message="loadingErrorMessage">
             <ListOfWatchlists :watchlists="apiResults" />
         </LoadingWrapper>

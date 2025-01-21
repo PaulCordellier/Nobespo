@@ -18,6 +18,10 @@ function showAccountMenu() {
     }
 }
 
+function addFreind() {
+    router.push({ name: 'search-users'})
+}
+
 function createWatchlist() {
     router.push({ name: 'create-watchlist' })
 }
@@ -29,11 +33,11 @@ function disconnect() {
 </script>
 
 <template>
-  <header>
+<header>
     <RouterLink tabindex="-1" to="/"> <md-filled-tonal-button> Home </md-filled-tonal-button> </RouterLink>
     <RouterLink tabindex="-1" to="/films-series"> <md-filled-tonal-button> Films und Series </md-filled-tonal-button> </RouterLink>
     <RouterLink tabindex="-1" to="/watch-lists"> <md-filled-tonal-button> Watch lists </md-filled-tonal-button> </RouterLink>
- 
+
     <md-filled-tonal-button v-if="currentUserStore.isConnected" @click="showAccountMenu" id="account-button">
         <div id="account-button-content">
             <img src="@/assets/images/icons/default-user.png">
@@ -41,6 +45,9 @@ function disconnect() {
         </div>
         <!-- TODO replace buggy md-menu? -->
         <md-menu id="account-menu" anchor="account-button" ref="account-menu">
+            <md-menu-item @click="addFreind">
+                <div slot="headline">Freund Hinzufügen</div>
+            </md-menu-item>
             <md-menu-item @click="createWatchlist">
                 <div slot="headline">Eine Watchlist erstellen</div>
             </md-menu-item>
@@ -52,14 +59,11 @@ function disconnect() {
 
     <RouterLink tabindex="-1" to="/log-in" v-if="!currentUserStore.isConnected"> <md-filled-tonal-button> Log in </md-filled-tonal-button> </RouterLink>
     <RouterLink tabindex="-1" to="/sign-up" v-if="!currentUserStore.isConnected"> <md-filled-tonal-button> Sign up </md-filled-tonal-button> </RouterLink>
-  </header>
+</header>
 
-  <main>
+<main>
     <RouterView />
-  </main>
-
-  <footer>
-  </footer>
+</main>
 </template>
 
 

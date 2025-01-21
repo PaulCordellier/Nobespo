@@ -34,7 +34,7 @@ async function fetchTrending() {
 
 <template>
     <div class="small-margin-container">
-        <SearchBar searchRouteName="search-films-series" />
+        <SearchBar placeholder="Films oder Series suchen" searchRouteName="search-films-series" />
         <LoadingWrapper :loadedRef="apiResultsLeftSide" :errorMessage="loadingErrorMessage">
             <div id="trending">
                 <ListOfFilmsAndSeries :medias="apiResultsLeftSide" />

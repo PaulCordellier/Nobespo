@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, useTemplateRef } from "vue"
+import { ref } from "vue"
 import { useRouter } from "vue-router"
 import onLongTextAreaInput from "@/misc/onLongTextAreaInput"
 import LoadingWrapper from "@/components/LoadingWrapper.vue"
@@ -8,11 +8,11 @@ import FieldVerifier from "@/components/FieldVerifier.vue"
 import { type FieldVerifierInfo } from "@/components/FieldVerifier.vue"
 import ButtonWithLoading from "@/components/ButtonWithLoading.vue"
 import { ResponseState } from "@/components/ButtonWithLoading.vue"
-import { type Watchlist } from "@/misc/watchlist-types"
 import ListOfFilmsAndSeries from "@/components/ListOfFilmsAndSeries.vue"
+import SearchBar from "@/components/SearchBar.vue"
+import { type Watchlist } from "@/misc/watchlist-types"
 
 const currentUserStore = useCurrentUserStore()
-const searchBar = useTemplateRef('watchlist-search-bar')
 const router = useRouter()
 
 const watchlist = ref<Watchlist>({
@@ -22,7 +22,6 @@ const watchlist = ref<Watchlist>({
     seriesIds: []
 })
 
-const searchFieldHasText = ref(false)
 const showSearchResults = ref(false)
 const responseState = ref<ResponseState>(ResponseState.NoRequest)
 const searchResults = ref<any[] | undefined>([])    
@@ -139,30 +138,18 @@ function onTitleInput(event: Event) {
 function onDescriptionAreaInput(event: Event) {
     let descriptionAreaInput = event.target as HTMLTextAreaElement
     onLongTextAreaInput(descriptionAreaInput)
-    watchlist.value.description = descriptionAreaInput.value
+    watchlist.value.description = descriptionAreaInput.value    // TODO Clean this up
 }
 
-function onSearchBarInput(event: Event) {
-    let searchBar = event.target as HTMLInputElement
-    searchFieldHasText.value = searchBar.value != ''
-
-    if (searchBar.value == '') {
-        searchResults.value = undefined
-        showSearchResults.value = false
-    }
-}
-
-function onButtonToRemoveSearchTextClick() {
+function onSearchBarTextRemoved() {
     searchResults.value = undefined
-    searchBar.value!.value = ''
-    loadingErrorMessage.value = undefined
-    searchFieldHasText.value = false
     showSearchResults.value = false
+    loadingErrorMessage.value = undefined
 }
 </script>
 
 <template>
-    <div class="big-margin-container">
+    <div class="basic-margin-container">
         <p class="text-field-label">Titel:</p>
         <input
             type="text"
@@ -185,22 +172,11 @@ function onButtonToRemoveSearchTextClick() {
             :should-be-small="true"
         />
 
-        <div id="search-bar-wrapper">
-            <input
-                id="search-bar"
-                ref="watchlist-search-bar"
-                placeholder="Nach Filmen oder Serien suchen, um sie auf die Watchlist zu setzen"
-                @input="onSearchBarInput"
-                @keyup.enter="fetchSearchResults(($event.target as HTMLInputElement).value)"
-            >
-            <img
-                v-if="searchFieldHasText"
-                src="@/assets/images/icons/close.svg"
-                alt="Remove search text"
-                id="remove-search-text-icon"
-                @click="onButtonToRemoveSearchTextClick"
-            >
-        </div>
+        <SearchBar
+            placeholder="Nach Filmen oder Serien suchen, um sie auf die Watchlist zu setzen"
+            :onSearchTextRemoved="onSearchBarTextRemoved"
+            :actionOnEnterPressed="fetchSearchResults"
+        />
 
         <LoadingWrapper v-if="showSearchResults" :loaded-ref="searchResults" :error-message="loadingErrorMessage">
             <p v-if="searchResults!.length > 0" class="text-field-label">Suchergebnisse:</p>
@@ -224,21 +200,3 @@ function onButtonToRemoveSearchTextClick() {
         <ButtonWithLoading button-text="Erstellen" :button-event="addWatchlist" :responseState="responseState" />
     </div>
 </template>
-
-<style lang="scss">
-#add-button, l-dot-spinner {
-    display: block;
-    margin: 20px auto 0 auto;
-}
-
-#search-bar-wrapper {
-    position: relative;
-
-    #remove-search-text-icon {
-        position: absolute;
-        right: 7px;
-        top: 7px;
-        cursor: pointer;
-    }
-}
-</style>

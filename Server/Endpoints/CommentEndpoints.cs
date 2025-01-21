@@ -71,9 +71,6 @@ public static class CommentEndpoints
             return Results.BadRequest("Bad token");
         }
 
-        // Sanitizing string here:
-        commentText = commentText.Trim().Replace("'", "''");
-
         var commentToAdd = new FilmComment
         {
             Text = commentText,
@@ -98,9 +95,6 @@ public static class CommentEndpoints
             return Results.BadRequest("Bad token");
         }
 
-        // Sanitizing string here:
-        commentText = commentText.Trim().Replace("'", "''");
-
         var commentToAdd = new SerieComment
         {
             Text = commentText,
@@ -124,9 +118,6 @@ public static class CommentEndpoints
         {
             return Results.BadRequest("Bad token");
         }
-
-        // Sanitizing string here:
-        commentText = commentText.Trim().Replace("'", "''");
 
         var watchlistToAdd = new WatchlistComment
         {

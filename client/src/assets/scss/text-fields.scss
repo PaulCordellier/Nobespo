@@ -23,19 +23,3 @@
     resize: none;
     height: 50px;
 }
-
-#search-bar {
-    @extend .text-field;
-
-    margin: 20px 0;
-    padding-left: 48px;
-
-    background: url(@/assets/images/icons/search.svg) no-repeat scroll 7px 7px;
-    background-size: 35px;
-}
-
-@media (max-width: 700px) {
-    #search-bar {
-        padding: 10px 10%;
-    }
-}

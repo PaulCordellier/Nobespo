@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Security.Claims;
 
 namespace Server.Endpoints;
 
@@ -14,9 +15,30 @@ public static partial class UserEndpoints
     {
         var route = app.MapGroup("user").WithTags("User");
 
-        route.MapPost("login", Login);
+        route.MapGet("searchbyusername/{username}", SearchByUsername);
 
+        route.MapPost("login", Login);
         route.MapPost("signup", SignUp);
+
+        route.MapPost("follow/{username}", FollowUser);
+        route.MapPost("unfollow/{username}", UnfollowUser);
+    }
+
+    private static async Task<IResult> SearchByUsername(string username, ClaimsPrincipal claimsPrincipal, ApiDbContext dbContext, JwtTokenService tokenService)
+    {
+        User? user;
+
+        if (!tokenService.TryGetUserIdFromClaims(claimsPrincipal, out int userId) ||
+            (user = await dbContext.Users.FirstOrDefaultAsync(x => x.Id == userId)) is null)
+        {
+            return Results.BadRequest("Bad token");
+        }
+
+        var foundUsernames = await dbContext.SearchUsernames(username)
+                                            .Select(x => new { x.Username, FollowsCurrentUser = x.Followers.Contains(user) })
+                                            .ToArrayAsync();
+
+        return Results.Ok(foundUsernames);
     }
 
     private static async Task<IResult> Login([FromBody] UserConnexionRequestData requestData,
@@ -59,7 +81,7 @@ public static partial class UserEndpoints
 
         byte[] hashedPassword =  PlainTextPasswordToHash(requestData.Password);
 
-        User newUser = new User() { HashedPassword = hashedPassword, Username = requestData.Username };
+        User newUser = new() { HashedPassword = hashedPassword, Username = requestData.Username };
 
         await dbContext.Users.AddAsync(newUser);
         await dbContext.SaveChangesAsync();
@@ -85,5 +107,53 @@ public static partial class UserEndpoints
     private static bool UsernameIsValid(in string username)
     {
         return username.Length <= 25 && UsernameRegex().Match(username).Success;
+    }
+
+    private async static Task<IResult> FollowUser(string username, ClaimsPrincipal claimsPrincipal, ApiDbContext dbContext, JwtTokenService tokenService)
+    {
+        User? currentUser;
+
+        if (!tokenService.TryGetUserIdFromClaims(claimsPrincipal, out int userId) ||
+            (currentUser = await dbContext.Users.FirstOrDefaultAsync(x => x.Id == userId)) is null)
+        {   
+            return Results.BadRequest("Bad token");
+        }
+
+        User? userToFollow = await dbContext.Users.FirstOrDefaultAsync(x => x.Username == username);
+
+        if (userToFollow is null)
+        {
+            return Results.NotFound();
+        }
+
+        currentUser.UsersFollowed.Add(userToFollow);
+        await dbContext.SaveChangesAsync();
+
+        return Results.NoContent();
+    }
+
+    private async static Task<IResult> UnfollowUser(string username, ClaimsPrincipal claimsPrincipal, ApiDbContext dbContext, JwtTokenService tokenService)
+    {
+        User? currentUser;
+
+        if (!tokenService.TryGetUserIdFromClaims(claimsPrincipal, out int userId) ||
+            (currentUser = await dbContext.Users.FirstOrDefaultAsync(x => x.Id == userId)) is null)
+        {
+            return Results.BadRequest("Bad token");
+        }
+
+        User? userToUnfollow = await dbContext.Users
+                                              .Include(x => x.Followers)
+                                              .FirstOrDefaultAsync(x => x.Username == username && x.Followers.Contains(currentUser));
+
+        if (userToUnfollow is null)
+        {
+            return Results.NotFound();
+        }
+
+        currentUser.UsersFollowed.Remove(userToUnfollow);
+        await dbContext.SaveChangesAsync();
+
+        return Results.NoContent();
     }
 }

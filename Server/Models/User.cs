@@ -17,7 +17,9 @@ public class User
     [Column("hashed_password")]
     public required byte[] HashedPassword { get; set; }
 
-    public ICollection<SerieComment> SeriesComments { get; set; } = [];
-    public ICollection<FilmComment> FilmsComments { get; set; } = [];
-    public ICollection<Watchlist> Watchlists { get; set; } = [];
+    public ICollection<SerieComment> SeriesComments { get; } = [];
+    public ICollection<FilmComment> FilmsComments { get; } = [];
+    public ICollection<Watchlist> Watchlists { get; } = [];
+    public ICollection<User> Followers { get; } = [];
+    public ICollection<User> UsersFollowed { get; } = [];
 }

@@ -53,6 +53,11 @@ const routes = [
     path: '/watch-lists/create',
     name: 'create-watchlist',
     component: () => import('@/pages/watch-list/create-watchlist.vue')
+  },
+  {
+    path: '/search-users',
+    name: 'search-users',
+    component: () => import('@/pages/user-data/search-users.vue')
   }
 ]
 

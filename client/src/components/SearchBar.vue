@@ -1,35 +1,104 @@
 <script setup lang="ts">
-import { useTemplateRef } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 
-const { searchRouteName } = defineProps<{
-    searchRouteName: string
+const { placeholder, searchRouteName, actionOnEnterPressed, onSearchTextRemoved, getSearchTextFromQuery } = defineProps<{
+    placeholder: string
+    searchRouteName?: string
+    actionOnEnterPressed?: (searchText: string) => void
+    onSearchTextRemoved?: () => void
+    getSearchTextFromQuery?: boolean
 }>()
 
 const router = useRouter()
 const route = useRoute()
-const textField = useTemplateRef('search-bar')
+const searchText = ref<string>('')
+
+onMounted(() => {
+    if (getSearchTextFromQuery) {
+        searchText.value = decodeURI(route.params.query as string)
+    }
+})
+
+function onSearchBarInput() {
+    if (searchText.value == '' && onSearchTextRemoved) {
+        onSearchTextRemoved()
+    }
+}
 
 function onEnterPressed() {
-    let writtenText = textField.value!.value
-
-    if (!textField || writtenText.length <= 0) {
+    if (searchText.value == '') {
         return
     }
-    
-    let query = encodeURI(writtenText)
 
-    router.push({ name: searchRouteName, params: { query }})
+    if (searchRouteName) {
+        router.push({ name: searchRouteName, params: { query: encodeURI(searchText.value) }})
+    }
+
+    if (actionOnEnterPressed) {
+        actionOnEnterPressed(searchText.value)
+    }
+}
+
+function onButtonToRemoveSearchTextClick() {
+    searchText.value = ''
+    
+    if (onSearchTextRemoved) {
+        onSearchTextRemoved()
+    }
 }
 </script>
 
 <template>
-    <input
-        placeholder="Films oder Series suchen"
-        id="search-bar"
-        ref="search-bar"
-        type="search"
-        :value="route.params.query ? decodeURI(route.params.query as string) : ''"
-        @keyup.enter="onEnterPressed"
-    >
+    <div id="search-bar-wrapper">
+        <input
+            id="search-bar"
+            v-model="searchText"
+            type="search"
+            :placeholder="placeholder"
+            @input="onSearchBarInput"
+            @keyup.enter="onEnterPressed"
+        >
+        <button
+            v-if="searchText != ''"
+            id="remove-search-text-button"
+            @click="onButtonToRemoveSearchTextClick"
+        >
+            <img src="@/assets/images/icons/close.svg" alt="Remove search text">
+        </button>
+    </div>
 </template>
+
+<style lang="scss">
+@use '../assets/scss/text-fields.scss';
+
+#search-bar {
+    @extend .text-field;
+
+    margin: 20px 0;
+    padding-left: 48px;
+
+    background: url(@/assets/images/icons/search.svg) no-repeat scroll 7px 7px;
+    background-size: 35px;
+}
+
+@media (max-width: 700px) {
+    #search-bar {
+        padding: 10px 10%;
+    }
+}
+
+#search-bar-wrapper {
+    position: relative;
+
+    #remove-search-text-button {
+        position: absolute;
+        cursor: pointer;
+        background: none;
+        border: none;
+        right: 7px;
+        top: 7px;
+        padding: 0;
+    }
+}
+</style>

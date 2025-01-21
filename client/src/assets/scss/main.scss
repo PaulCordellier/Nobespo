@@ -23,9 +23,18 @@ body {
 }
 
 .big-margin-container {
+    margin: 10px 30%;
+}
+
+.basic-margin-container {
     margin: 10px 18%;
 }
 
 .small-margin-container {
     margin: 10px 10%;
+}
+
+l-dot-spinner {
+    display: block;
+    margin: 20px auto 0 auto;
 }

@@ -33,8 +33,12 @@ async function fetchApi() {
 </script>
 
 <template>
-    <div class="big-margin-container">
-        <SearchBar searchRouteName="search-films-series" />
+    <div class="basic-margin-container">
+        <SearchBar
+            placeholder="Films oder Series suchen"
+            searchRouteName="search-films-series"
+            :get-search-text-from-query="true"
+        />
         <LoadingWrapper :loaded-ref="apiResults" :error-message="loadingErrorMessage">
             <ListOfFilmsAndSeries :medias="apiResults" />
             <h1 v-if="apiResults!.length == 0" class="error-message">Nothing was found !</h1>

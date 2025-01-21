@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { MdOutlinedButton } from '@material/web/button/outlined-button'
-
 import { onMounted, ref } from "vue"
 import { useRoute } from "vue-router"
 
@@ -46,7 +44,7 @@ onMounted(async () => {
                     <p>Wie bewerten Sie diesen Film?</p>
                     <StarsRatingHover starEnabledColor="white" starDisabledColor="grey"/>
 
-                    <md-outlined-button>Erstellen</md-outlined-button>
+                    <button class="secondary-button">Erstellen</button>
                 </div>
             </div>
             <CommentSection

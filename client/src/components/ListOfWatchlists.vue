@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { MdRipple } from "@material/web/ripple/ripple"
 import { type WatchlistInfo } from "@/misc/watchlist-types"
 
 defineProps<{
@@ -9,7 +8,6 @@ defineProps<{
 
 <template>
 <RouterLink :to="`/watch-lists/${watchlist.id}`" class="watchlist-tile" v-for="watchlist in watchlists">
-    <md-ripple></md-ripple>
     <div>
         <div v-for="posterPath in watchlist.posterPaths" class="poster-wrapper">
             <img :src="`https://image.tmdb.org/t/p/w154${posterPath}`" class="poster">

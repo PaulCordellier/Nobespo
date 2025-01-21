@@ -5,9 +5,8 @@
 	gap: 15px;
 	padding: 15px;
 	align-items: center;
-	color: white;
-	text-decoration: none;
 	width: 100%;
+    transition: background-color 0.1s;
 
 	.tile-text {
 		flex-grow: 1;
@@ -22,6 +21,14 @@
     button {
         flex-grow: 0;
     }
+}
+
+.tile:hover {
+	background-color: rgba(255, 255, 255, 0.1);
+}
+
+.tile:active {
+	background-color: rgba(255, 255, 255, 0.2);
 }
 
 .tile-paragraph {

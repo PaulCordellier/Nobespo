@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { MdFilledButton } from '@material/web/button/filled-button'
 import FieldVerifier from "@/components/FieldVerifier.vue"
 import { type FieldVerifierInfo } from "@/components/FieldVerifier.vue"
 import { ref } from 'vue'
@@ -160,7 +159,7 @@ async function submitFrom() {
         />
 
         <div class="button-container">
-            <md-filled-button @click="submitFrom">Anmelden</md-filled-button>
+            <button class="primary-button" @click="submitFrom">Anmelden</button>
         </div>
     </div>
 </template>

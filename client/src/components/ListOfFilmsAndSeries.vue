@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { RouterLink } from "vue-router"
-import { MdRipple } from "@material/web/ripple/ripple"
 
 defineProps<{
     medias: any[] | undefined,
@@ -20,7 +19,6 @@ defineProps<{
 			:to="{ name: media.media_type == 'movie' ? 'film' : 'serie', params: { id: media.id }}"
 			class="tile"
 		>
-			<md-ripple></md-ripple>
 			<img
 				v-if="media.poster_path"
 				:src="`https://image.tmdb.org/t/p/${shouldBeSmall ? 'w92' : 'w154'}${media.poster_path}`"

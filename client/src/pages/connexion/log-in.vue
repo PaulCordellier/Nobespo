@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import FieldVerifier from "@/components/FieldVerifier.vue"
 import { ref } from 'vue'
-import { MdFilledButton } from '@material/web/button/filled-button'
 import { useRouter } from 'vue-router'
 import { useCurrentUserStore } from "@/stores/currentUser"
 
@@ -68,7 +67,7 @@ async function submitFrom() {
         />
 
         <div class="button-container">
-            <md-filled-button @click="submitFrom">Einloggen</md-filled-button>
+            <button class="primary-button" @click="submitFrom">Einloggen</button>
         </div>
     </div>
 </template>

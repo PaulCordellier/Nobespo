@@ -2,8 +2,6 @@
 import { ref, onMounted } from "vue"
 import { useRoute } from "vue-router"
 
-import { MdOutlinedButton } from "@material/web/button/outlined-button"
-
 import CommentSection from "@/components/CommentSection.vue"
 import StarsRatingHover from "@/components/rating/StarsRatingHover.vue"
 import ListOfFilmsAndSeries from "@/components/ListOfFilmsAndSeries.vue"
@@ -87,7 +85,7 @@ onMounted(async () => {
                     <p>Wie würden Sie diese Watchlist bewerten?</p>
                     <StarsRatingHover starEnabledColor="white" starDisabledColor="grey"/>
                     <ListOfFilmsAndSeries :medias="filmAndSeries" :shouldBeSmall="true"/>
-                    <md-outlined-button>Erstellen</md-outlined-button>
+                    <button class="secondary-button">Erstellen</button>
                 </div>
             </div>
             <CommentSection

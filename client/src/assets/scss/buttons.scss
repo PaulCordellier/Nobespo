@@ -1,12 +1,43 @@
 // I created this because the button from google material design web is very buggy
 
 $basic-button-size: 45px;
+$bigger-button-size: 60px;
+
+.button {
+    border: none;
+    transition: background-color 0.2s;
+    font-size: 1.05em;
+    padding: 0 15px;
+    line-height: $basic-button-size;
+    border-radius: calc($basic-button-size / 2);
+}
 
 .primary-button {
+    @extend .button;
     background-color: rgb(250, 250, 250);
     color: black;
-    height: $basic-button-size;
-    padding: 0 15px;
-    border: none;
-    border-radius: calc($basic-button-size / 2);
+}
+
+.primary-button:hover {
+    background-color: rgb(250, 250, 250, 0.8);
+}
+
+.secondary-button {
+    @extend .button;
+    background-color: transparent;
+    color: white;
+}
+
+.secondary-button:hover {
+    background-color: rgb(255, 255, 255, 0.2);
+}
+
+.router-link-active.secondary-button {
+    background-color: rgb(255, 255, 255, 0.1);
+}
+
+.bigger-secondary-button {
+    @extend .secondary-button;
+    height: $bigger-button-size;
+    border-radius: calc($bigger-button-size / 2);
 }

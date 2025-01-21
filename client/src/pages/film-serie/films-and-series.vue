@@ -1,70 +1,49 @@
 <script setup lang="ts">
+import { onMounted, ref } from "vue"
 import SearchBar from "@/components/SearchBar.vue"
 import ListOfFilmsAndSeries from "@/components/ListOfFilmsAndSeries.vue"
 import LoadingWrapper from "@/components/LoadingWrapper.vue"
-import { onMounted, ref } from "vue"
 
-const apiResultsLeftSide = ref<any[]>()
-const apiResultsRightSide = ref<any[]>()
+const apiResults = ref<any[]>()
 
-const loadingErrorMessage = ref<string | undefined>()
+const loadingErrorMessage = ref<string>()
 
-onMounted(fetchTrending)
-
-async function fetchTrending() {
-
+onMounted(async () => {
     loadingErrorMessage.value = undefined
     
     const response = await fetch("/api/tmdb/trending", { method: "GET" })
 
     if (response.ok) {
         const apiResponse = await response.json()
-
-        const apiResults = apiResponse.results as any[]
-        const middleIndex = Math.ceil(apiResults.length / 2)
-
-        apiResultsLeftSide.value = apiResults.slice(0, middleIndex)
-        apiResultsRightSide.value = apiResults.slice(middleIndex)
+        apiResults.value = apiResponse.results
     } else {
         loadingErrorMessage.value = "Fehler: Code " + response.status
     }
-}
-
+})
 </script>
 
 <template>
     <div class="small-margin-container">
         <SearchBar placeholder="Films oder Series suchen" searchRouteName="search-films-series" />
-        <LoadingWrapper :loadedRef="apiResultsLeftSide" :errorMessage="loadingErrorMessage">
+        <LoadingWrapper :loadedRef="apiResults" :errorMessage="loadingErrorMessage">
             <div id="trending">
-                <ListOfFilmsAndSeries :medias="apiResultsLeftSide" />
-                <ListOfFilmsAndSeries :medias="apiResultsRightSide" />
+                <ListOfFilmsAndSeries :medias="apiResults" />
             </div>
         </LoadingWrapper>
     </div>
 </template>
 
 
-<style lang="scss" scoped>
-
+<style>
 #trending {
-    display: flex;
-    flex-direction: row;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
     padding-bottom: 40px;
-
-    div {
-        width: 50%;
-    }
 }
 
 @media (max-width: 900px) {
     #trending {
-        flex-direction: column;
-        padding-bottom: 40px;
-
-        div {
-            width: 100%;
-        }
+        grid-template-columns: 1fr;
     }
 }
 </style>

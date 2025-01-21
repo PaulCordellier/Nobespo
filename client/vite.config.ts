@@ -7,7 +7,14 @@ import vueDevTools from 'vite-plugin-vue-devtools'
 // docs : https://vite.dev/config/
 export default defineConfig({
     plugins: [
-        vue(),
+        vue({
+            template: {
+                compilerOptions: {
+                    // treat all tags with l- as custom elements
+                    isCustomElement: (tag) => tag.startsWith("l-"),
+                },
+            },
+        }),
         vueDevTools()
     ],
     resolve: {

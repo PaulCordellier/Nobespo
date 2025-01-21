@@ -30,7 +30,7 @@ const addedMedias = ref<any[]>([])
 const filedVerifiersWithErrorIcon = ref<boolean>(false)
 
 async function addWatchlist() {
-    
+
     filedVerifiersWithErrorIcon.value = true
     
     if (fieldVerifierInfos.some(x => !x.isValid())) {
@@ -131,16 +131,6 @@ function removeMedia(mediaIndex : number, event : Event) {
     }
 }
 
-function onTitleInput(event: Event) {
-    watchlist.value.title = (event.target as HTMLTextAreaElement).value
-}
-
-function onDescriptionAreaInput(event: Event) {
-    let descriptionAreaInput = event.target as HTMLTextAreaElement
-    onLongTextAreaInput(descriptionAreaInput)
-    watchlist.value.description = descriptionAreaInput.value    // TODO Clean this up
-}
-
 function onSearchBarTextRemoved() {
     searchResults.value = undefined
     showSearchResults.value = false
@@ -154,7 +144,7 @@ function onSearchBarTextRemoved() {
         <input
             type="text"
             class="text-field"
-            @input="onTitleInput"
+            v-model="watchlist.title"
             maxlength="200"
         >
 
@@ -162,7 +152,8 @@ function onSearchBarTextRemoved() {
         <textarea
             class="long-text-area"
             maxlength="10000"
-            @input="onDescriptionAreaInput"
+            @input="onLongTextAreaInput($event.target as HTMLTextAreaElement)"
+            v-model="watchlist.description"
         ></textarea>
 
         <p v-if="addedMedias.length > 0" class="text-field-label">Filme und Serien auf der Watchlist:</p>

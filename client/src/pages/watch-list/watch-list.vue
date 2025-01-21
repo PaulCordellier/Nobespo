@@ -64,7 +64,6 @@ onMounted(async () => {
     <LoadingWrapper :loadedRef="watchlist" :errorMessage="loadingErrorMessage">
         <div class="basic-margin-container">
             <div id="media-or-watchlist-full-description">
-                <!-- <img :src="`https://image.tmdb.org/t/p/w185${???}`" id="poster"/> -->
                 <div id="details">
                     <p id="first-line">
                         <span id="title">{{ watchlist!.title }}</span>

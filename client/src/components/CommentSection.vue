@@ -5,6 +5,7 @@ import { useCurrentUserStore } from "@/stores/currentUser"
 import onLongTextAreaInput from "@/misc/onLongTextAreaInput"
 import ButtonWithLoading from "@/components/ButtonWithLoading.vue"
 import { ResponseState } from "@/components/ButtonWithLoading.vue"
+import LoadingWrapper from "@/components/LoadingWrapper.vue"
 
 const currentUserStore = useCurrentUserStore()
 const router = useRouter()
@@ -24,10 +25,13 @@ type Comment = {
 
 const comments = ref<Comment[] | null>(null)
 const responseState = ref<ResponseState>(ResponseState.NoRequest)
+const loadingErrorMessage = ref<string | undefined>()
 
 onMounted(getComments)
 
 async function getComments() {
+
+    loadingErrorMessage.value = undefined
 
     const response = await fetch(urlToGetComments, { method: 'GET' })
 
@@ -35,7 +39,7 @@ async function getComments() {
         comments.value = await response.json() as Comment[]
         responseState.value = ResponseState.NoRequest
     } else {
-        // TODO
+        loadingErrorMessage.value = "Fehler: Code " + response.status
     }
 }
 
@@ -96,18 +100,20 @@ async function publishComment() {
                 button-text="Posten"
                 :response-state="responseState" />
         </div>
-        <!-- TODO use LoadingWrapper here -->
-        <div class="comment" v-if="comments && comments.length >= 1" v-for="comment in comments">
-            <div class="info-line-comment">
-                <img src="@/assets/images/icons/default-user.png" />
-                <p>{{ comment.username }}</p>
-                <p class="stars">★★★★</p>
+        
+        <LoadingWrapper :loaded-ref="comments" :error-message="loadingErrorMessage">
+            <div class="comment" v-if="comments && comments.length >= 1" v-for="comment in comments">
+                <div class="info-line-comment">
+                    <img src="@/assets/images/icons/default-user.png" />
+                    <p>{{ comment.username }}</p>
+                    <p class="stars">★★★★</p>
+                </div>
+                <p>{{ comment.text }}</p>
             </div>
-            <p>{{ comment.text }}</p>
-        </div>
-        <div class="comment" v-if="comments && comments.length == 0">
-            <p>Es gibt noch keine Kommentare.</p>
-        </div>
+            <div v-else>
+                <p>Es gibt noch keine Kommentare.</p>
+            </div>
+        </LoadingWrapper>
     </div>
 </template>
 

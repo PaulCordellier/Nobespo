@@ -26,12 +26,12 @@ document.addEventListener('click', event => {
 
 <template>
 <header>
-    <RouterLink to="/" class="secondary-button"> Home </RouterLink>
-    <RouterLink to="/films-series" class="secondary-button"> Films und Series </RouterLink>
-    <RouterLink to="/watch-lists" class="secondary-button"> Watch lists </RouterLink>
+    <RouterLink to="/" class="text-button"> Home </RouterLink>
+    <RouterLink to="/films-series" class="text-button"> Films und Series </RouterLink>
+    <RouterLink to="/watch-lists" class="text-button"> Watch lists </RouterLink>
 
     <div v-if="currentUserStore.isConnected" id="account-button" ref="account-button">
-        <div id="account-button" class="bigger-secondary-button">
+        <div id="account-button" class="bigger-text-button">
             <img src="@/assets/images/icons/default-user.png">
             <p>{{ currentUserStore.username }}</p>
             <Transition>
@@ -50,8 +50,8 @@ document.addEventListener('click', event => {
         </div>
     </div>
 
-    <RouterLink to="/log-in" v-if="!currentUserStore.isConnected" class="secondary-button"> Log in </RouterLink>
-    <RouterLink to="/sign-up" v-if="!currentUserStore.isConnected" class="secondary-button"> Sign up </RouterLink>
+    <RouterLink to="/log-in" v-if="!currentUserStore.isConnected" class="text-button"> Log in </RouterLink>
+    <RouterLink to="/sign-up" v-if="!currentUserStore.isConnected" class="text-button"> Sign up </RouterLink>
 </header>
 
 <main>

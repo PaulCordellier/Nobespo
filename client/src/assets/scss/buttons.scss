@@ -12,32 +12,41 @@ $bigger-button-size: 60px;
     border-radius: calc($basic-button-size / 2);
 }
 
-.primary-button {
+.filled-button {
     @extend .button;
     background-color: rgb(250, 250, 250);
     color: black;
 }
 
-.primary-button:hover {
+.filled-button:hover {
     background-color: rgb(250, 250, 250, 0.8);
 }
 
-.secondary-button {
+.text-button {
     @extend .button;
     background-color: transparent;
     color: white;
 }
 
-.secondary-button:hover {
+.text-button:hover {
     background-color: rgb(255, 255, 255, 0.2);
 }
 
-.router-link-active.secondary-button {
+.router-link-active.text-button {
     background-color: rgb(255, 255, 255, 0.1);
 }
 
-.bigger-secondary-button {
-    @extend .secondary-button;
+.bigger-text-button {
+    @extend .text-button;
     height: $bigger-button-size;
     border-radius: calc($bigger-button-size / 2);
+}
+
+.outlined-button {
+    @extend .text-button;
+    border: solid rgba(255, 255, 255, 0.8) 2px;
+}
+    
+.outlined-button:hover {
+    background-color: rgb(255, 255, 255, 0.2);
 }

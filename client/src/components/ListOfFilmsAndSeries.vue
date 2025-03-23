@@ -31,7 +31,7 @@ defineProps<{
 		<button
 			v-if="buttonInfo"
 			@click="event => buttonInfo!.buttonEvent(index, event)"
-			class="primary-button"
+			class="filled-button"
 		>
 			{{ buttonInfo!.buttonText }}
 		</button>

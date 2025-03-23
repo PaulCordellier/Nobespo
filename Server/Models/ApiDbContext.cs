@@ -9,6 +9,9 @@ public sealed partial class ApiDbContext : DbContext
     public DbSet<SerieComment> SeriesComments { get; set; } = null!;
     public DbSet<Watchlist> Watchlists { get; set; } = null!;
     public DbSet<WatchlistComment> WatchlistComments { get; set; } = null!;
+    public DbSet<FilmRating> FilmRating { get; set; } = null!;
+    public DbSet<SerieRating> SerieRating { get; set; } = null!;
+    public DbSet<WatchlistRating> WatchlistRating { get; set; } = null!;
 
     public ApiDbContext() : base()
     {
@@ -35,11 +38,32 @@ public sealed partial class ApiDbContext : DbContext
                   .HasForeignKey(x => x.UserId)
                   .HasConstraintName("fk_user_serie_comment");
 
+            entity.HasMany(x => x.WatchlistsComments)
+                  .WithOne(x => x.User)
+                  .HasForeignKey(x => x.UserId)
+                  .HasConstraintName("fk_user_watchlist_comment");
+
+
             entity.HasMany(x => x.Watchlists)
                   .WithOne(x => x.User)
                   .HasForeignKey(x => x.UserId)
-                  .HasConstraintName("fk_user_watchlist")
-                  .IsRequired();
+                  .HasConstraintName("fk_user_watchlist");
+
+
+            entity.HasMany(x => x.FilmRatings)
+                  .WithOne(x => x.User)
+                  .HasForeignKey(x => x.UserId)
+                  .HasConstraintName("fk_user_film_rating");
+
+            entity.HasMany(x => x.SerieRatings)
+                  .WithOne(x => x.User)
+                  .HasForeignKey(x => x.UserId)
+                  .HasConstraintName("fk_user_serie_rating");
+
+            entity.HasMany(x => x.WatchlistRatings)
+                  .WithOne(x => x.User)
+                  .HasForeignKey(x => x.UserId)
+                  .HasConstraintName("fk_user_watchlist_rating");
         });
 
         modelBuilder.Entity<FilmComment>(entity =>
@@ -57,10 +81,16 @@ public sealed partial class ApiDbContext : DbContext
         modelBuilder.Entity<Watchlist>(entity =>
         {
             entity.Property(x => x.PublishDate).HasDefaultValueSql("CURRENT_DATE");
+
             entity.HasMany(x => x.Comments)
                   .WithOne(x => x.Watchlist)
                   .HasForeignKey(x => x.WatchlistId)
                   .HasConstraintName("fk_watchlist_comment");
+
+            entity.HasMany(x => x.Ratings)
+                  .WithOne(x => x.Watchlist)
+                  .HasForeignKey(x => x.WatchlistId)
+                  .HasConstraintName("fk_watchlist_rating");
         });
 
         modelBuilder.Entity<WatchlistComment>().Property(x => x.PublishDate).HasDefaultValueSql("CURRENT_DATE");

@@ -19,7 +19,14 @@ public class User
 
     public ICollection<SerieComment> SeriesComments { get; } = [];
     public ICollection<FilmComment> FilmsComments { get; } = [];
+    public ICollection<WatchlistComment> WatchlistsComments { get; } = [];
+
     public ICollection<Watchlist> Watchlists { get; } = [];
+
     public ICollection<User> Followers { get; } = [];
     public ICollection<User> UsersFollowed { get; } = [];
+
+    public ICollection<FilmRating> FilmRatings { get; } = [];
+    public ICollection<SerieRating> SerieRatings { get; } = [];
+    public ICollection<WatchlistRating> WatchlistRatings { get; } = [];
 }

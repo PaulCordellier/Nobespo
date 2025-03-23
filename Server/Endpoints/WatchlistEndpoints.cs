@@ -103,7 +103,7 @@ public static class WatchlistEndpoints
             index++;
         }
 
-        await dbContext.Watchlists.AddAsync(watchlist);
+        dbContext.Watchlists.Add(watchlist);
         await dbContext.SaveChangesAsync();
 
         return Results.NoContent();

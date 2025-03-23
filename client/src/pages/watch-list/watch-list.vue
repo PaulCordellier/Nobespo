@@ -1,24 +1,29 @@
 <script setup lang="ts">
-import { ref, onMounted } from "vue"
-import { useRoute } from "vue-router"
+import { ref, onMounted } from 'vue'
+import { useRoute } from 'vue-router'
 
-import CommentSection from "@/components/CommentSection.vue"
-import StarsRatingHover from "@/components/rating/StarsRatingHover.vue"
-import ListOfFilmsAndSeries from "@/components/ListOfFilmsAndSeries.vue"
-import LoadingWrapper from "@/components/LoadingWrapper.vue"
-import { type WatchlistInfo } from "@/misc/watchlist-types"
+import StarsRating from '@/components/rating/StarsRating.vue'
+import RatingDialog from '@/components/rating/RatingDialog.vue'
+import CommentSection from '@/components/CommentSection.vue'
+import LoadingWrapper from '@/components/LoadingWrapper.vue'
+import ListOfFilmsAndSeries from '@/components/ListOfFilmsAndSeries.vue'
+import { type WatchlistInfo } from '@/misc/watchlist-types'
+import { useCurrentUserStore } from '@/stores/currentUser'
 
 const route = useRoute()
 
-let watchlist = ref<WatchlistInfo>()
-let filmAndSeries = ref<any[]>()
-let loadingErrorMessage = ref<string>()
+const watchlist = ref<WatchlistInfo>()
+const filmAndSeries = ref<any[]>()
+const loadingErrorMessage = ref<string>()
+
+const currentUserStore = useCurrentUserStore()
+const userRating = ref<number>(0)
 
 onMounted(async () => {
 
     loadingErrorMessage.value = undefined
 
-    const response = await fetch(`/api/watchlist/getbyid/${route.params.id}`, { method: "GET" })
+    let response = await fetch(`/api/watchlist/getbyid/${route.params.id}`, { method: "GET" })
 
     if (response.ok) {
         watchlist.value = await response.json() as WatchlistInfo
@@ -40,7 +45,7 @@ onMounted(async () => {
     
     for (let filmOrSerieUrl of filmsAndSeriesUrls) {
         
-        const response = await fetch(filmOrSerieUrl, { method: "GET" })
+        response = await fetch(filmOrSerieUrl, { method: "GET" })
 
         if (response.ok) {
             let filmOrSerie = await response.json()
@@ -56,6 +61,24 @@ onMounted(async () => {
             loadingErrorMessage.value = "Fehler: Code " + response.status
             return
         }
+    }
+
+    if (!currentUserStore.isConnected) {
+        return
+    }
+
+    response = await fetch("/api/rate/watchlist/" + route.params.id, {
+        method: "GET",
+        headers: {
+            'Authorization': `Bearer ${currentUserStore.token}`,
+        }
+    })
+
+    console.log(response.status);
+    
+
+    if (response.ok) {
+        userRating.value = await response.json() as number
     }
 })
 </script>
@@ -80,11 +103,29 @@ onMounted(async () => {
                     </p>
     
                     <p id="description">{{ watchlist!.description }}</p>
+
+                    <br v-if="userRating != 0">
+                    <p v-if="userRating != 0">Ihre Bewertung</p>
+                    <StarsRating
+                        v-if="userRating != 0"
+                        starEnabledColor="white"
+                        starDisabledColor="grey"
+                        :rating="userRating"
+                        :size="40"
+                    />
+
+                    <br>
     
-                    <p>Wie würden Sie diese Watchlist bewerten?</p>
-                    <StarsRatingHover starEnabledColor="white" starDisabledColor="grey"/>
+                    <RatingDialog
+                        starEnabledColor="white"
+                        starDisabledColor="grey"
+                        dialog-title="Wie würden Sie diese Watchlist bewerten?"
+                        :media-id="parseInt(route.params.id as string)"
+                        post-url="/api/rate/watchlist/"
+                        @rating-changed="$router.go(0)"
+                    />
+                    
                     <ListOfFilmsAndSeries :medias="filmAndSeries" :shouldBeSmall="true"/>
-                    <button class="secondary-button">Erstellen</button>
                 </div>
             </div>
             <CommentSection

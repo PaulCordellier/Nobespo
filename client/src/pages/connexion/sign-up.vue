@@ -159,7 +159,7 @@ async function submitFrom() {
         />
 
         <div class="button-container">
-            <button class="primary-button" @click="submitFrom">Anmelden</button>
+            <button class="filled-button" @click="submitFrom">Anmelden</button>
         </div>
     </div>
 </template>

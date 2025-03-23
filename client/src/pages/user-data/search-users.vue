@@ -44,7 +44,7 @@ async function followUser(username: string) {
         method: 'POST',
         headers: {
             'Authorization': `Bearer ${currentUserStore.token}`,
-            'Content-Type': 'application/json',
+            'Content-Type': 'application/json'
         },
     })
 
@@ -55,7 +55,7 @@ async function unfollowUser(username: string) {
         method: 'POST',
         headers: {
             'Authorization': `Bearer ${currentUserStore.token}`,
-            'Content-Type': 'application/json',
+            'Content-Type': 'application/json'
         },
     })
 
@@ -76,14 +76,14 @@ async function unfollowUser(username: string) {
                 <h2>{{ searchResult.username }}</h2>
                 <button
                     v-if="searchResult.followsCurrentUser"
-                    class="primary-button"
+                    class="filled-button"
                     @click="unfollowUser(searchResult.username)"
                 >
                     Unfollow
                 </button>
                 <button
                     v-else
-                    class="primary-button"
+                    class="filled-button"
                     @click="followUser(searchResult.username)"
                 >
                     Follow

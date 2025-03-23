@@ -6,6 +6,7 @@ import onLongTextAreaInput from "@/misc/onLongTextAreaInput"
 import ButtonWithLoading from "@/components/ButtonWithLoading.vue"
 import { ResponseState } from "@/components/ButtonWithLoading.vue"
 import LoadingWrapper from "@/components/LoadingWrapper.vue"
+import StarsRating from "@/components/rating/StarsRating.vue"
 
 const currentUserStore = useCurrentUserStore()
 const router = useRouter()
@@ -21,6 +22,7 @@ type Comment = {
     text: string
     username: string
     publishDate: string
+    rating: number
 }
 
 const comments = ref<Comment[] | null>(null)
@@ -38,6 +40,7 @@ async function getComments() {
     if (response.ok) {
         comments.value = await response.json() as Comment[]
         responseState.value = ResponseState.NoRequest
+        
     } else {
         loadingErrorMessage.value = "Fehler: Code " + response.status
     }
@@ -106,7 +109,13 @@ async function publishComment() {
                 <div class="info-line-comment">
                     <img src="@/assets/images/icons/default-user.png" />
                     <p>{{ comment.username }}</p>
-                    <p class="stars">★★★★</p>
+                    <StarsRating
+                        v-if="comment.rating >= 1"
+                        starEnabledColor="white"
+                        starDisabledColor="grey"
+                        :rating="comment.rating"
+                        :size="30"
+                    />
                 </div>
                 <p>{{ comment.text }}</p>
             </div>

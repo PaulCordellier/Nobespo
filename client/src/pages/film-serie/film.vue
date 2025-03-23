@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { onMounted, ref } from "vue"
-import { useRoute } from "vue-router"
+import { ref, onMounted } from 'vue'
+import { useRoute } from 'vue-router'
 
-import StarsRatingHover from '@/components/rating/StarsRatingHover.vue'
-import CommentSection from "@/components/CommentSection.vue"
-import LoadingWrapper from "@/components/LoadingWrapper.vue"
+import StarsRating from '@/components/rating/StarsRating.vue'
+import RatingDialog from '@/components/rating/RatingDialog.vue'
+import CommentSection from '@/components/CommentSection.vue'
+import LoadingWrapper from '@/components/LoadingWrapper.vue'
 
 const route = useRoute()
 
@@ -41,10 +42,14 @@ onMounted(async () => {
 
                     <p id="description">{{ media.overview }}</p>
 
-                    <p>Wie bewerten Sie diesen Film?</p>
-                    <StarsRatingHover starEnabledColor="white" starDisabledColor="grey"/>
-
-                    <button class="secondary-button">Erstellen</button>
+                    <RatingDialog
+                        starEnabledColor="white"
+                        starDisabledColor="grey"
+                        dialog-title="Wie würden Sie diesen Film bewerten?"
+                        :media-id="parseInt(route.params.id as string)"
+                        post-url="/api/rate/film/"
+                        @rating-changed="$router.go(0)"
+                    />
                 </div>
             </div>
             <CommentSection

@@ -21,7 +21,7 @@ export enum ResponseState {
 <template>
     <button
         v-if="responseState != ResponseState.Loading"
-        class="primary-button"
+        class="filled-button"
         id="add-button"
         @click="buttonEvent">
         {{ buttonText }}

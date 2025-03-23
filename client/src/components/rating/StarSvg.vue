@@ -1,24 +1,14 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue'
-
 let { leftSideColor, rightSideColor } = defineProps<{
     leftSideColor: string,
     rightSideColor: string,
     size: number,
 }>()
-
-watch(
-    () => leftSideColor == rightSideColor,
-    () => starShouldBeTwoPaths.value = leftSideColor != rightSideColor
-)
-
-let starShouldBeTwoPaths = ref<boolean>(false)
-
 </script>
 
 <template>
 <svg   
-    :style="`height: ${size}px; width: ${size}px;`"
+    :style="{ 'height': size + 'px', 'width': size + 'px' }"
     version="1.0"
     width="512.000000pt"
     height="512.000000pt"
@@ -27,7 +17,7 @@ let starShouldBeTwoPaths = ref<boolean>(false)
     xmlns="http://www.w3.org/2000/svg"
     xmlns:svg="http://www.w3.org/2000/svg">
 
-    <g v-if="starShouldBeTwoPaths"
+    <g v-if="leftSideColor !== rightSideColor"
         transform="translate(0.000000,512.000000) scale(0.100000,-0.100000)"
         stroke="none">
         <path

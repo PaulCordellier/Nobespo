@@ -148,5 +148,6 @@ app.MapMediaEndpoints();
 app.MapWatchlistEndpoints();
 app.MapCommentEndpoints();
 app.MapUserEndpoints();
+app.MapRatingEndpoints();
 
 app.Run();

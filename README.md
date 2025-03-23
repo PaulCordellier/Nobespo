@@ -2,6 +2,14 @@
 
 Welcome to this project, a website in which you can create movies lists, rate, comment movies and series, similar to [Letterboxd](https://letterboxd.com/). It uses [The Movie Database](https://www.themoviedb.org) to get information the movies and the series.
 
+## Start
+
+Open the app at the root of the project with
+```
+docker-compose build
+docker-compose up
+```
+
 
 ## Secrets
 

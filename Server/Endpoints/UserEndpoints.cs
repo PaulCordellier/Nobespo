@@ -83,7 +83,7 @@ public static partial class UserEndpoints
 
         User newUser = new() { HashedPassword = hashedPassword, Username = requestData.Username };
 
-        await dbContext.Users.AddAsync(newUser);
+        dbContext.Users.Add(newUser);
         await dbContext.SaveChangesAsync();
 
         return Results.Ok(new { Token = jwtTokenService.GenerateToken(newUser), newUser.Username });

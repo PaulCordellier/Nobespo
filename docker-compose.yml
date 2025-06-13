@@ -35,7 +35,7 @@ services:
     tty: true           # Equivalent to -t (allocate a pseudo-TTY)
   database:
     container_name: nobespo-db-container
-    image: postgres:17
+    image: postgres:latest
     restart: always
     # set shared memory limit when using docker-compose:
     shm_size: 128mb
@@ -44,6 +44,7 @@ services:
       POSTGRES_DB: nobespo
     volumes:
       - ./database/generated_creation_script.sql:/docker-entrypoint-initdb.d/1_creation_script.sql
+      - ./database/insertion_script.sql:/docker-entrypoint-initdb.d/2_insertion_script.sql
     secrets:
       - DbPassword
 

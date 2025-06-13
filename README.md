@@ -17,7 +17,7 @@ To run the app, you need to generate passwords and get [API keys form The Movie 
 
 ### Docker secrets
 
-You need to create the files
+To run this app with docker (which is easier) create the files:
 DbPassword.txt
 JwtSecretKey.txt
 TmdbApiKey.txt
@@ -26,7 +26,7 @@ in the secrets folder. Each file has it's corresponding secret. These secrets wi
 
 ### .NET secrets
 
-You need to setup the three secrets DbPassword, JwtSecretKey, TmdbApiKey and TmdbApiReadToken with their corresponding value. Here's a link [that shows you how to do that](https://learn.microsoft.com/en-us/aspnet/core/security/app-secrets) just in case.
+To run the app without docker, you need to setup the four secrets DbPassword, JwtSecretKey, TmdbApiKey and TmdbApiReadToken with their corresponding value, with .NET secrets. Here's a link [that shows you how to do that](https://learn.microsoft.com/en-us/aspnet/core/security/app-secrets).
 
 
 ## Certificate

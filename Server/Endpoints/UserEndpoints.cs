@@ -98,7 +98,7 @@ public static partial class UserEndpoints
     private static byte[] PlainTextPasswordToHash(string plainTextPassword)
     {
         byte[] tmpSource = Encoding.UTF8.GetBytes(plainTextPassword);
-        return SHA256.HashData(tmpSource);  // I could also use SHA-384 or SHA-512 here
+        return SHA256.HashData(tmpSource);
     }
 
     [GeneratedRegex("^[a-z0-9_-]*$")]
